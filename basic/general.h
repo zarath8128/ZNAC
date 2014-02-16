@@ -4,7 +4,7 @@
 namespace ZNAC
 {
 	template<class T>
-	class interface
+	class IClonable
 	{
 	public:
 		constexpr virtual T *Clone() = 0;
