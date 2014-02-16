@@ -9,7 +9,7 @@ using namespace ZNAC::LA;
 
 int main()
 {
-	constexpr unsigned int dim = 2000;
+	constexpr unsigned int dim = 5000;
 	Vector<dim> v, w, b;
 	Matrix<dim> m;
 
@@ -28,6 +28,7 @@ int main()
 
 
 	lNorm<double> l2(2);
+	supNorm<double> linf;
 	Jacobi<double> j(200000, 1e-12, l2);
 	GaussSeidel<double> gs(200000, 1e-12, l2);
 	CG<double> cg(dim, 1e-12, l2);

@@ -41,17 +41,29 @@ namespace ZNAC
 
 		template<class T>
 		class supNorm
-			:INorm<T>
+			:public INorm<T>
 		{
 		public:
-			INorm<T> *Clone(){return new supNorm;}
+			constexpr INorm<T> *Clone(){return new supNorm;}
 
 			constexpr T operator()(IVector<T> &v)
 			{
-				double t = 0;
-				for(unsigned int i = 0; i < v.Dim(); ++i)
+				/*double t = 0;
+				for(unsigned int i = 0; i < v.dim(); ++i)
 					t = ((t > v[i])?(t):(v[i]));
-				return t;
+				return t;*/
+				return this->operator()(v, v.dim() - 1);
+			}
+
+		private:
+			constexpr T operator()(IVector<T> &v, unsigned int dim)
+			{
+				return ((dim)?(MAX(v[dim], this->operator()(v, dim - 1))):(v[dim]));
+			}
+
+			constexpr T MAX(T a, T b)
+			{
+				return ((a > b)?(a):(b));
 			}
 		};
 	}
