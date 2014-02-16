@@ -8,19 +8,19 @@ namespace ZNAC
 	namespace LA
 	{
 		template<class T>
-		class absVector
-			:public interface<absVector<T> >
+		class IVector
+			:public IClonable<IVector<T> >
 		{
 		public:
-			virtual ~absVector(){}
+			virtual ~IVector(){}
 			constexpr virtual T& operator[](unsigned int i) = 0;
 			constexpr virtual unsigned int dim() = 0;
-			constexpr virtual absVector<T> *Clone() = 0;
+			constexpr virtual IVector<T> *Clone() = 0;
 		};
 
 		template<unsigned int Dim, class T = double>
 		class Vector
-			:public absVector<T>
+			:public IVector<T>
 		{
 		public:
 			Vector():buf(new T[Dim]){}
@@ -28,7 +28,7 @@ namespace ZNAC
 
 			constexpr T& operator[](unsigned int i){return buf[i];}
 			constexpr unsigned int dim(){return Dim;}
-			constexpr absVector<T> *Clone(){return new Vector<Dim, T>;}
+			constexpr IVector<T> *Clone(){return new Vector<Dim, T>;}
 		private:
 			T *buf;
 		};
