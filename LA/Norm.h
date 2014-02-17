@@ -30,13 +30,13 @@ namespace ZNAC
 
 			constexpr T operator()(IVector<T> &v)
 			{
-				return pow(this->operator()(v, v.dim() - 1), 1/p);
+				return pow(ABS(this->operator()(v, v.dim() - 1)), 1/p);
 			}
 
 		private:
 			double p;
 
-			constexpr T operator()(IVector<T> &v, unsigned int dim){return ((dim)?(this->operator()(v, dim - 1) + pow(v[dim], p)):(pow(v[dim], p)));}
+			constexpr T operator()(IVector<T> &v, unsigned int dim){return ((dim)?(this->operator()(v, dim - 1) + pow(ABS(v[dim]), p)):(pow(ABS(v[dim]), p)));}
 		};
 
 		template<class T>
@@ -58,12 +58,7 @@ namespace ZNAC
 		private:
 			constexpr T operator()(IVector<T> &v, unsigned int dim)
 			{
-				return ((dim)?(MAX(v[dim], this->operator()(v, dim - 1))):(v[dim]));
-			}
-
-			constexpr T MAX(T a, T b)
-			{
-				return ((a > b)?(a):(b));
+				return ((dim)?(MAX(ABS(v[dim]), this->operator()(v, dim - 1))):(ABS(v[dim])));
 			}
 		};
 	}
