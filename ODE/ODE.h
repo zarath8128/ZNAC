@@ -1,5 +1,8 @@
 #ifndef ZARATH_ZNAC_ODE_ODE_H
 #define ZARATH_ZNAC_ODE_ODE_H
+
+#include "../basic/general.h"
+#include "../LA/Vector.h"
 #include <iostream>
 
 namespace ZNAC
@@ -7,39 +10,37 @@ namespace ZNAC
 	namespace ODE
 	{
 
-	class Domain
-	{
-	public:
-		virtual unsigned int Range() = 0;
-		virtual Domain *Clone() = 0;
-		virtual double &operator[](unsigned int i) = 0;
-	};
-
+	template<class T>
 	class ODE
 	{
 	public:
-		virtual void operator()(Domain &u, Domain &du) = 0;
+		virtual void operator()(LA::IVector<T> &u, LA::IVector<T> &du) = 0;
 	};
 
+	template<class T>
 	class ODESolver
 	{
 	public:
-		ODESolver(Domain &x0, ODE &&f):x(x0.Clone()), temp(x0.Clone()), f(f)
+		ODESolver(LA::IVector<T> &x0):temp(x0.Clone()){}
+		virtual ~ODESolver(){delete temp;}
+		void operator()(ODE<T> &f, LA::IVector<T> &x0, LA::IVector<T> &x, double t_init, double t_term)
 		{
-			for(unsigned int i = 0; i < x0.Range(); ++i)
-				(*x)[i] = x0[i];
+			double t = t_init;
+			double h = dt();
+			for(unsigned int i = 0; i < x0.dim(); ++i)
+				temp->operator[](i) = x0[i];
+			while(t + h < t_term)
+				t += Step(f, *temp, *temp, t, h);
+
+			Step(f, *temp, x, t, t_term - t);
 		}
-		virtual ~ODESolver(){delete x; delete temp;}
-		virtual void operator++() = 0;
-		void operator+(unsigned int count){for(unsigned int i = 0; i < count; ++i)++(*this);}
-		virtual void operator>>(Domain &target)
-		{
-			for(unsigned int i = 0; i < x->Range(); ++i)
-				target[i] = (*x)[i];
-		}
+
+		virtual double Step(ODE<T> &f, LA::IVector<T> &x0, LA::IVector<T> &x1, double t, double dt) = 0;
+
 	protected:
-		Domain *x, *temp;
-		ODE &f;
+		LA::IVector<T> *temp;
+
+		virtual double dt() = 0;
 	};
 
 	}

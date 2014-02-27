@@ -3,4 +3,4 @@ all:test
 clean:
 	rm -f test *.o
 
-test:Real.o EulerMethod.o RKMethod.o
+test:EulerMethod.h RKMethod.h
