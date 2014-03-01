@@ -12,12 +12,12 @@ namespace ZNAC
 			:public ODESolver<T>
 		{
 		public:
-			EulerMethod(LA::IVector<T> &x0, double dt):ODESolver<T>(x0),h(dt), xtemp(x0.Clone()){};
+			EulerMethod(LA::Vector<T> &x0, double dt):ODESolver<T>(x0),h(dt), xtemp(x0.Clone()){};
 			~EulerMethod(){delete xtemp;};
 			
 			void Setdt(double dt){h = dt;}
 
-			double Step(ODE<T> &f, LA::IVector<T> &x0, LA::IVector<T> &x1, double t, double dt)
+			double Step(ODE<T> &f, LA::Vector<T> &x0, LA::Vector<T> &x1, double t, double dt, bool fix = false)
 			{
 				f(x0, *xtemp);
 				for(unsigned int i = 0; i < xtemp->dim(); ++i)
@@ -27,7 +27,7 @@ namespace ZNAC
 
 		private:
 			double h;
-			LA::IVector<T> *xtemp;
+			LA::Vector<T> *xtemp;
 
 			double dt(){return h;}
 		};

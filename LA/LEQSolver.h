@@ -9,16 +9,10 @@ namespace ZNAC
 	namespace LA
 	{
 		template<class T>
-		T &MAX(T &a, T &b){return ((a < b)?(b):(a));}
-
-		template<class T>
-		T ABS(T x){return ((x < 0)?(-x):(x));}
-
-		template<class T>
 		class LEQSolver
 		{
 		public:
-			virtual void operator()(IMatrix<T> &m, IVector<T> &x, IVector<T> &b) = 0;
+			virtual void operator()(IMatrix<T> &m, Vector<T> &x, Vector<T> &b) = 0;
 		};
 
 		template<class T>
@@ -28,9 +22,9 @@ namespace ZNAC
 		public:
 			constexpr Jacobi(unsigned int limit, double eps, INorm<T> &norm):lim(limit), eps(eps), norm(norm.Clone()){}
 			~Jacobi(){delete norm;}
-			void operator()(IMatrix<T> &m, IVector<T> &x, IVector<T> &b)
+			void operator()(IMatrix<T> &m, Vector<T> &x, Vector<T> &b)
 			{
-				IVector<T> *tmp = b.Clone();
+				Vector<T> *tmp = b.Clone();
 				T t;
 				for(unsigned int i = 0; i < lim; ++i)
 				{
@@ -66,9 +60,9 @@ namespace ZNAC
 		public:
 			constexpr GaussSeidel(unsigned int limit, double eps, INorm<T> &norm):lim(limit), eps(eps), norm(norm.Clone()){}
 			~GaussSeidel(){delete norm;}
-			void operator()(IMatrix<T> &m, IVector<T> &x, IVector<T> &b)
+			void operator()(IMatrix<T> &m, Vector<T> &x, Vector<T> &b)
 			{
-				IVector<T> *tmp = b.Clone();
+				Vector<T> *tmp = b.Clone();
 				T t;
 				for(unsigned int i = 0; i < lim; ++i)
 				{
@@ -105,9 +99,9 @@ namespace ZNAC
 		public:
 			constexpr CG(unsigned int limit, double eps, INorm<T> &norm):lim(limit), eps(eps), norm(norm.Clone()){}
 			~CG(){delete norm;}
-			void operator()(IMatrix<T> &m, IVector<T> &x, IVector<T> &b)
+			void operator()(IMatrix<T> &m, Vector<T> &x, Vector<T> &b)
 			{
-				IVector<T> *r = x.Clone(), *p = x.Clone(), *tmp = x.Clone();
+				Vector<T> *r = x.Clone(), *p = x.Clone(), *tmp = x.Clone();
 				T t, t1, t2, alpha, beta;
 
 				for(unsigned int i = 0; i < x.dim(); ++i)

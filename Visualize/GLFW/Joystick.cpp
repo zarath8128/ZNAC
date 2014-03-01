@@ -9,22 +9,14 @@ Joystick::Joystick()
 Joystick::Joystick(int joy)
 	:joy(joy)
 {
-	if(glfwJoystickPresent(joy) == GL_TRUE)
-		name = glfwGetJoystickName(joy);
-	else
-		name = 0;
-
-	if(*this)
-		Update();
+	isEnable = (glfwJoystickPresent(joy) == GL_TRUE);
 }
 
-void Joystick::Update()
-{
-	axes = glfwGetJoystickAxes(joy, &axes_range);
-	buttons = glfwGetJoystickButtons(joy, &buttons_range);
-}
+const float *Joystick::Axes(int &range){return glfwGetJoystickAxes(joy, &range);}
+const unsigned char *Joystick::Buttons(int &range){return glfwGetJoystickButtons(joy, &range);}
+const char *Joystick::Name(){return glfwGetJoystickName(joy);}
 
 Joystick::operator bool()
 {
-	return name != 0;
+	return isEnable;
 }

@@ -12,19 +12,19 @@ namespace ZNAC
 			:public ODE<T>
 		{
 		public:
-			Dahlquist(LA::IVector<T> &param):param(param.Clone())
+			Dahlquist(LA::Vector<T> &param):param(param.Clone())
 			{
 				for(unsigned int i = 0; i < param.dim(); ++i)
 					(*this->param)[i] = param[i];
 			}
 
-			void operator()(LA::IVector<T> &u, LA::IVector<T> &du)
+			void operator()(LA::Vector<T> &u, LA::Vector<T> &du)
 			{
 				for(unsigned int i = 0; i < u.dim(); ++i)
 					du[i] = (*param)[i]*u[i];
 			}
 		private:
-			LA::IVector<T> *param;
+			LA::Vector<T> *param;
 		};
 	}
 }

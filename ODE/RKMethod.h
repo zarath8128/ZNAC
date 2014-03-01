@@ -12,22 +12,22 @@ namespace ZNAC
 			:public ODESolver<T>
 		{
 		public:
-			RKMethod(LA::IVector<T> &x0, double dt):ODESolver<T>(x0), h(dt)
+			RKMethod(LA::Vector<T> &x0, double dt):ODESolver<T>(x0), h(dt)
 			{
-				for(int i = 0; i < 4; ++i)
+				for(unsigned int i = 0; i < 4; ++i)
 					k[i] = x0.Clone();
 				xtemp = x0.Clone();
 			}
 			~RKMethod()
 			{
-				for(int i = 0; i < 4; ++i)
+				for(unsigned int i = 0; i < 4; ++i)
 					delete k[i];
 				delete xtemp;
 			}
 
 			void Setdt(double dt){h = dt;}
 
-			double Step(ODE<T> &f, LA::IVector<T> &x0, LA::IVector<T> &x1, double t, double dt)
+			double Step(ODE<T> &f, LA::Vector<T> &x0, LA::Vector<T> &x1, double t, double dt, bool fix = false)
 			{
 				f(x0, *k[0]);
 				for(unsigned int i = 0; i < x0.dim(); ++i)
@@ -46,7 +46,7 @@ namespace ZNAC
 
 		private:
 			double h;
-			LA::IVector<T> *k[4], *xtemp;
+			LA::Vector<T> *k[4], *xtemp;
 
 			double dt(){return h;}
 		};

@@ -10,7 +10,7 @@ using namespace ZNAC::LA;
 int main()
 {
 	constexpr unsigned int dim = 5000;
-	Vector<dim> v, w, b;
+	Vector<> v(dim), w(dim), b(dim);
 	Matrix<dim> m;
 //	DiagonalMatrix<dim, 2> m;
 
