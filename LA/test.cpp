@@ -9,14 +9,15 @@ using namespace ZNAC::LA;
 
 int main()
 {
-	constexpr unsigned int dim = 5000;
-	Vector<> v(dim), w(dim), b(dim);
+	constexpr unsigned int dim = 2;
+	Vector<> v(dim), w(dim);
+	double *b = new double[dim];
 	Matrix<dim> m;
 //	DiagonalMatrix<dim, 2> m;
 
 	for(unsigned int r = 0; r < dim; ++r)
 		for(unsigned int c = 0; c < dim; ++c)
-			m(r, c) = ((r == c)?(4.1):((r - c >= - 2 || r - c <= 2)?(-1):(0)));
+			m(r, c) = ((r == c)?(4.1):(((int)(r - c) >= - 2 || (int)(r - c) <= 2)?(-1):(0)));
 
 	for(unsigned int i = 0; i < dim; ++i)
 	{
@@ -27,23 +28,12 @@ int main()
 //		std::cout << std::endl;
 	}
 
-	lNorm<double> l2(2);
-	CG<double> cg(dim, 1e-12, l2);
+	lNorm<double> l2(dim, 2);
+	std::cout << 2 << std::endl;
+	l2.Set(b);
+	std::cout << 2 << std::endl;
 
-	clock_t t0 = clock();
-	cg(m, w, b);
-	clock_t t1 = clock();
-
-	m(w, v);
-
-//	for(unsigned int i = 0; i < dim; ++i)
-//		std::cout << v[i] << "\t" << b[i] << std::endl;
-
-	for(unsigned int i = 0; i < dim; ++i)
-		v[i] -= b[i];
-
-	std::cout << "time = " << (t1 - t0)/(double)CLOCKS_PER_SEC << std::endl;
-	std::cout << "err  = " << l2(v) << std::endl;
+	std::cout << (double)l2 << std::endl;
 
 	return 0;
 }

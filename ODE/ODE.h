@@ -14,32 +14,31 @@ namespace ZNAC
 	class ODE
 	{
 	public:
-		virtual void operator()(LA::Vector<T> &u, LA::Vector<T> &du) = 0;
+		virtual void operator()(T *u, T *du) = 0;
 	};
 
 	template<class T>
 	class ODESolver
 	{
 	public:
-		ODESolver(LA::Vector<T> &x0):temp(x0.Clone()){}
+		ODESolver(unsigned int dim):dim(dim), temp(new T[dim]){}
 		virtual ~ODESolver(){delete temp;}
-		void operator()(ODE<T> &f, LA::Vector<T> &x0, LA::Vector<T> &x, double t_init, double t_term)
+		void operator()(ODE<T> &f, T *x0, T *x, double t, double dt)
 		{
-			double t = t_init;
-			for(unsigned int i = 0; i < x0.dim(); ++i)
-				temp->operator[](i) = x0[i];
-			while(t + dt() < t_term)
-				t += Step(f, *temp, *temp, t, dt());
+			for(unsigned int i = 0; i < dim; ++i)
+				temp[i] = x0[i];
+			while(dt < t)
+				t -= Step(f, temp, temp, dt);
 
-			t += Step(f, *temp, x, t, t_term - t, true);
+			FixedStep(f, temp, x, t);
 		}
 
-		virtual double Step(ODE<T> &f, LA::Vector<T> &x0, LA::Vector<T> &x1, double t, double dt, bool fix = false) = 0;
+		virtual double Step(ODE<T> &f, T *x0, T *x1, double &dt) = 0;
+		virtual double FixedStep(ODE<T> &f, T *x0, T *x1, double dt){return Step(f, x0, x1, dt);}
 
 	protected:
-		LA::Vector<T> *temp;
-
-		virtual double dt() = 0;
+		const unsigned int dim;
+		T *temp;
 	};
 
 	}

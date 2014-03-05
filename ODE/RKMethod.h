@@ -12,43 +12,32 @@ namespace ZNAC
 			:public ODESolver<T>
 		{
 		public:
-			RKMethod(LA::Vector<T> &x0, double dt):ODESolver<T>(x0), h(dt)
+			RKMethod(unsigned int dim):ODESolver<T>(dim), xtemp(new T[5*dim])
 			{
 				for(unsigned int i = 0; i < 4; ++i)
-					k[i] = x0.Clone();
-				xtemp = x0.Clone();
+					k[i] = xtemp + dim*(i + 1);
 			}
-			~RKMethod()
-			{
-				for(unsigned int i = 0; i < 4; ++i)
-					delete k[i];
-				delete xtemp;
-			}
+			~RKMethod(){delete xtemp;}
 
-			void Setdt(double dt){h = dt;}
-
-			double Step(ODE<T> &f, LA::Vector<T> &x0, LA::Vector<T> &x1, double t, double dt, bool fix = false)
+			double Step(ODE<T> &f, T *x0, T *x1, double &dt)
 			{
-				f(x0, *k[0]);
-				for(unsigned int i = 0; i < x0.dim(); ++i)
-					xtemp->operator[](i) = x0[i] + 0.5*dt*k[0]->operator[](i);
-				f(*xtemp, *k[1]);
-				for(unsigned int i = 0; i < x0.dim(); ++i)
-					xtemp->operator[](i) = x0[i] + 0.5*dt*k[1]->operator[](i);
-				f(*xtemp, *k[2]);
-				for(unsigned int i = 0; i < x0.dim(); ++i)
-					xtemp->operator[](i) = x0[i] + dt*k[2]->operator[](i);
-				f(*xtemp, *k[3]);
-				for(unsigned int i = 0; i < x0.dim(); ++i)
-					x1[i] = x0[i] + dt*(k[0]->operator[](i)+2*k[1]->operator[](i)+2*k[2]->operator[](i)+k[3]->operator[](i))*(1/6.);
+				f(x0, k[0]);
+				for(unsigned int i = 0; i < this->dim; ++i)
+					xtemp[i] = x0[i] + 0.5*dt*k[0][i];
+				f(xtemp, k[1]);
+				for(unsigned int i = 0; i < this->dim; ++i)
+					xtemp[i] = x0[i] + 0.5*dt*k[1][i];
+				f(xtemp, k[2]);
+				for(unsigned int i = 0; i < this->dim; ++i)
+					xtemp[i] = x0[i] + dt*k[2][i];
+				f(xtemp, k[3]);
+				for(unsigned int i = 0; i < this->dim; ++i)
+					x1[i] = x0[i] + dt*(k[0][i] + 2*k[1][i] + 2*k[2][i] + k[3][i])*(1/6.);
 				return dt;
 			}
 
 		private:
-			double h;
-			LA::Vector<T> *k[4], *xtemp;
-
-			double dt(){return h;}
+			T *k[4], *xtemp;
 		};
 	}
 }
