@@ -1,4 +1,4 @@
-FLAGS += -Wextra -Wall -O3
+FLAGS += -Wextra -Wall -O2 
 CFLAGS += -std=c99 ${FLAGS}
 CXXFLAGS += -std=c++0x ${FLAGS}
 

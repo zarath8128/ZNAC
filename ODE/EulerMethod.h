@@ -7,16 +7,26 @@ namespace ZNAC
 {
 	namespace ODE
 	{
+		template<class T>
 		class EulerMethod
-			:public ODESolver
+			:public ODESolver<T>
 		{
 		public:
-			EulerMethod(Domain &x0, ODE &&f, double dt);
-			~EulerMethod();
-			void operator++();
+			EulerMethod(unsigned int dim):ODESolver<T>(dim), xtemp(new T[dim]){};
+			~EulerMethod(){delete xtemp;};
+			
+			void Setdt(double dt){this->dt = dt;}
+
+			double Step(ODE<T> &f, T *x0, T *x1, double &dt)
+			{
+				f(x0, xtemp);
+				for(unsigned int i = 0; i < this->dim; ++i)
+					x1[i] = x0[i] + dt*xtemp[i];
+				return dt;
+			}
 
 		private:
-			double dt;
+			T *xtemp;
 		};
 	}
 }

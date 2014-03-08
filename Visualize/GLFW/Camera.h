@@ -2,6 +2,7 @@
 #define ZARATH_ZNAC_VISUALIZE_GLFW_CAMERA_H
 
 #include "GLFW/glfw3.h"
+#include "Joystick.h"
 
 namespace ZNAC
 {
@@ -43,6 +44,7 @@ namespace ZNAC
 			Camera(int width, int height, double far, double dot_per_unit = 320);
 			
 			void Set();
+			void Set(Joystick &j);
 			void Pitch(double theta);
 			void Roll(double theta);
 			void Yaw(double theta);

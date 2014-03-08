@@ -36,17 +36,20 @@ void set(vec3 p)
 
 void demoWindow::update()
 {
+	int range;
+	const float *axes = j.Axes(range);
+	const unsigned char *buttons = j.Buttons(range);
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glLoadIdentity();
 	glOrtho(-2, 2, -2, 2, 0, 4);
 
-	j.Update();
-	c.Yaw(j.axes[0]*0.1);
-	c.Pitch(j.axes[1]*0.1);
-	c.Roll(j.axes[5]*0.1);
-	c.Zoom(j.axes[6]*0.01);
-	c.Set();
+/*	c.Yaw(axes[0]*0.1);
+	c.Pitch(axes[1]*0.1);
+	c.Roll(axes[5]*0.1);
+	c.Zoom(axes[6]*0.01);
+*/	c.Set(j);
 
 	glBegin(GL_LINES);
 	glColor3d(0, 0, 0);

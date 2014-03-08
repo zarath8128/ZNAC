@@ -8,23 +8,18 @@ namespace ZNAC
 		class Joystick
 		{
 		public:
-			const char *name;
-			const float *axes;
-			int axes_range;
-			const unsigned char *buttons;
-			int buttons_range;
-
-			
-
 			Joystick();
 			Joystick(int joy);
 
-			void Update();
+			const float *Axes(int &range);
+			const unsigned char *Buttons(int &range);
+			const char *Name();
 
 			operator bool();
 
 		private:
 			int joy;
+			bool isEnable;
 		};
 	}
 }

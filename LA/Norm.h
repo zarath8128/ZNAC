@@ -11,12 +11,14 @@ namespace ZNAC
 	{
 		template<class T>
 		class INorm
-			:public IClonable<INorm<T>>
+			:public IWrapper<T*>
 		{
 		public:
+			INorm(unsigned int dim):dim(dim){}
 			virtual ~INorm(){}
-			constexpr virtual T operator()(IVector<T> &v) = 0;
-			constexpr virtual INorm<T> *Clone() = 0;
+			constexpr virtual operator T() = 0;
+		protected:
+			const unsigned int dim;
 		};
 
 		template<class T>
@@ -24,19 +26,17 @@ namespace ZNAC
 			:public INorm<T>
 		{
 		public:
-			lNorm(double p):p(p){}
+			lNorm(unsigned int dim, double p):INorm<T>(dim), p(p){}
 
-			constexpr INorm<T> *Clone(){return new lNorm(p);}
-
-			constexpr T operator()(IVector<T> &v)
+			constexpr operator T()
 			{
-				return pow(ABS(this->operator()(v, v.dim() - 1)), 1/p);
+				return pow(ABS(this->operator()(this->dim - 1)), 1/p);
 			}
 
 		private:
 			double p;
 
-			constexpr T operator()(IVector<T> &v, unsigned int dim){return ((dim)?(this->operator()(v, dim - 1) + pow(ABS(v[dim]), p)):(pow(ABS(v[dim]), p)));}
+			constexpr T operator()(unsigned int dim){return ((dim)?(this->operator()(dim - 1) + pow(ABS(((T*&)(*this))[dim]), p)):(pow(ABS(((T*&)(*this))[dim]), p)));}
 		};
 
 		template<class T>
@@ -44,21 +44,15 @@ namespace ZNAC
 			:public INorm<T>
 		{
 		public:
-			constexpr INorm<T> *Clone(){return new supNorm;}
-
-			constexpr T operator()(IVector<T> &v)
+			constexpr operator T()
 			{
-				/*double t = 0;
-				for(unsigned int i = 0; i < v.dim(); ++i)
-					t = ((t > v[i])?(t):(v[i]));
-				return t;*/
-				return this->operator()(v, v.dim() - 1);
+				return this->operator()(this->dim - 1);
 			}
 
 		private:
-			constexpr T operator()(IVector<T> &v, unsigned int dim)
+			constexpr T operator()(unsigned int dim)
 			{
-				return ((dim)?(MAX(ABS(v[dim]), this->operator()(v, dim - 1))):(ABS(v[dim])));
+				return ((dim)?(MAX(ABS(this->buf[dim]), this->operator()(dim - 1))):(ABS(this->buf[dim])));
 			}
 		};
 	}

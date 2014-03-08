@@ -5,7 +5,7 @@
 using namespace ZNAC::GLFW;
 
 Camera::Camera(GLFWwindow *window)
-	:dot_per_unit(320), far(100)
+	:dot_per_unit(320), far(1000000)
 {
 	glfwGetWindowSize(window, &width, &height);
 }
@@ -16,23 +16,34 @@ Camera::Camera(int width, int height, double far, double dpu)
 
 void Camera::Set()
 {
-	glOrtho(state.a[0][3]-width/dot_per_unit, state.a[0][3]+width/dot_per_unit, state.a[1][3] - height/dot_per_unit, state.a[1][3] + height/dot_per_unit, 0, far);
-	gluLookAt(state.a[0][0], state.a[1][0], state.a[2][0], state.a[0][3], state.a[1][3], state.a[2][3], state.a[0][1], state.a[1][1], state.a[2][1]);
+	glOrtho(state.a[0][3]-width/dot_per_unit, state.a[0][3]+width/dot_per_unit, state.a[1][3] - height/dot_per_unit, state.a[1][3] + height/dot_per_unit, -far, far);
+	gluLookAt(state.a[0][2], state.a[1][2], state.a[2][2], state.a[0][3], state.a[1][3], state.a[2][3], state.a[0][1], state.a[1][1], state.a[2][1]);
+}
+
+void Camera::Set(Joystick &j)
+{
+	int range;
+	const float *axes = j.Axes(range);
+	Yaw(axes[0]*0.1);
+	Pitch(axes[1]*0.1);
+	Roll(axes[5]*0.1);
+	Zoom(axes[6]*0.1);
+	Set();
 }
 
 void Camera::Pitch(double theta)
 {
-	state = state*Matrix::Rotate(0, 1, theta);
+	state = state*Matrix::Rotate(1, 2, theta);
 }
 
 void Camera::Roll(double theta)
 {
-	state = state*Matrix::Rotate(1, 2, theta);
+	state = state*Matrix::Rotate(1, 0, theta);
 }
 
 void Camera::Yaw(double theta)
 {
-	state = state*Matrix::Rotate(0, 2, theta);
+	state = state*Matrix::Rotate(2, 0, theta);
 }
 
 void Camera::Zoom(double e)

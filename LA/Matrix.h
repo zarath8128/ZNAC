@@ -13,7 +13,7 @@ namespace ZNAC
 		{
 		public:
 			virtual ~IMatrix(){}
-			virtual void operator()(IVector<T> &dom, IVector<T> &cod) = 0;
+			virtual void operator()(Vector<T> &dom, Vector<T> &cod) = 0;
 			constexpr virtual T &operator()(unsigned int r, unsigned int c) = 0;
 		};
 
@@ -25,7 +25,7 @@ namespace ZNAC
 			constexpr Matrix():buf(new T[Dim*Dim]){}
 			~Matrix(){delete buf;}
 
-			void operator()(IVector<T> &dom, IVector<T> &cod)
+			void operator()(Vector<T> &dom, Vector<T> &cod)
 			{
 				for(unsigned int i = 0; i < Dim; ++i)
 				{
@@ -54,7 +54,7 @@ namespace ZNAC
 			}
 			~DiagonalMatrix(){delete [] (bufp - diag); delete [] buf;}
 
-			void operator()(IVector<T> &dom, IVector<T> &cod)
+			void operator()(Vector<T> &dom, Vector<T> &cod)
 			{
 				for(unsigned int r = 0; r < Dim; ++r)
 				{

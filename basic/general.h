@@ -11,6 +11,21 @@ namespace ZNAC
 	};
 
 	template<class T>
+	class IWrapper
+	{
+	public:
+		IWrapper():buf(0){}
+		IWrapper(T &t):buf(&t){}
+
+		operator T&(){return *buf;}
+		void Set(T &b){buf = &b;}
+		
+	protected:
+		T *buf;
+
+	};
+
+	template<class T>
 	constexpr const T &MAX(const T &a, const T &b){return ((a < b)?(b):(a));}
 
 	template<class T>

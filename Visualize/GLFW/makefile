@@ -1,7 +1,6 @@
 include ../../makefile.v
 
-LD=${CXX} -E
-LDLIBS += -lglfw3 -lGL -lGLU -lXrandr -lXi -lrt -lstdc++ -lXxf86vm
+LDLIBS += -lGL -lGLU -lglfw3 -lX11 -lXrandr -lXi -lXxf86vm -lrt -lstdc++ -lpthread -lstdc++
 ALL += test Window.a
 CLEAN=${ALL} *.o
 

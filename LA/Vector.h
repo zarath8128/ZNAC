@@ -7,30 +7,21 @@ namespace ZNAC
 {
 	namespace LA
 	{
-		template<class T>
-		class IVector
-			:public IClonable<IVector<T> >
-		{
-		public:
-			virtual ~IVector(){}
-			constexpr virtual T& operator[](unsigned int i) = 0;
-			constexpr virtual unsigned int dim() = 0;
-			constexpr virtual IVector<T> *Clone() = 0;
-		};
-
-		template<unsigned int Dim, class T = double>
+		template<class T = double>
 		class Vector
-			:public IVector<T>
+			:public IClonable<Vector<T>>
 		{
 		public:
-			Vector():buf(new T[Dim]){}
-			~Vector(){delete [] buf;}
+			Vector():buf(nullptr), Dim(0){}
+			Vector(unsigned int Dim):buf(new T[Dim]), Dim(Dim){}
+			virtual ~Vector(){delete [] buf;}
 
-			constexpr T& operator[](unsigned int i){return buf[i];}
-			constexpr unsigned int dim(){return Dim;}
-			constexpr IVector<T> *Clone(){return new Vector<Dim, T>;}
-		private:
+			constexpr virtual T& operator[](unsigned int i){return buf[i];}
+			constexpr virtual unsigned int dim(){return Dim;}
+			constexpr virtual Vector<T> *Clone(){return new Vector<T>(Dim);}
+		protected:
 			T *buf;
+			const unsigned int Dim;
 		};
 	}
 }
