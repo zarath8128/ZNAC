@@ -7,7 +7,7 @@ clean:
 reset:
 	${MAKE} clean && reset && ${MAKE}
 
-%.a:%.o
+%.a:
 	${AR} -r $@ $^
 
 %.o:%.cu

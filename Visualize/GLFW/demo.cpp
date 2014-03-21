@@ -1,7 +1,9 @@
 #include "demo.h"
+#include "../libpng/PNGWriter.h"
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include <cmath>
+#include <iostream>
 
 using namespace ZNAC::GLFW;
 
@@ -49,14 +51,17 @@ void demoWindow::update()
 	c.Pitch(axes[1]*0.1);
 	c.Roll(axes[5]*0.1);
 	c.Zoom(axes[6]*0.01);
-*/	c.Set(j);
+*/	
+	c.Set(j);
 
 	glBegin(GL_LINES);
-	glColor3d(0, 0, 0);
+	glColor3d(1, 0, 0);
 	glVertex3d(0, 0, 0);
 	glVertex3d(0, 100, 0);
+	glColor3d(0, 1, 0);
 	glVertex3d(0, 0, 0);
 	glVertex3d(0, 0, 100);
+	glColor3d(0, 0, 1);
 	glVertex3d(0, 0, 0);
 	glVertex3d(100, 0, 0);
 	glEnd();
@@ -72,6 +77,7 @@ void demoWindow::update()
 	glEnd();
 	}
 
-
 	glfwSwapBuffers(wnd);
+
+	ZNAC::libpng::GLCapture("tetete.png", 0, 0, 640, 640);
 }

@@ -14,7 +14,7 @@ namespace ZNAC
 		public:
 			virtual ~IMatrix(){}
 			virtual void operator()(Vector<T> &dom, Vector<T> &cod) = 0;
-			constexpr virtual T &operator()(unsigned int r, unsigned int c) = 0;
+			virtual T &operator()(unsigned int r, unsigned int c) = 0;
 		};
 
 		template<unsigned int Dim, class T = double>
@@ -34,7 +34,7 @@ namespace ZNAC
 						cod[i] += this->operator()(i, j)*dom[j];
 				}
 			}
-			constexpr T &operator()(unsigned int r, unsigned int c){return buf[r*Dim + c];}
+			T &operator()(unsigned int r, unsigned int c){return buf[r*Dim + c];}
 		private:
 			T *buf;
 		};
@@ -64,7 +64,7 @@ namespace ZNAC
 				}
 			}
 
-			constexpr T &operator()(unsigned int r, unsigned int c){return ((ABS((int)r - (int)c) < (diag + 1))?(bufp[(int)r - (int)c][MIN(r, c)]):(buf[Dim*(diag*2 + 1) - diag*(diag + 1)] = 0));}
+			T &operator()(unsigned int r, unsigned int c){return ((ABS((int)r - (int)c) < (diag + 1))?(bufp[(int)r - (int)c][MIN(r, c)]):(buf[Dim*(diag*2 + 1) - diag*(diag + 1)] = 0));}
 		private:
 			T *buf;
 			T **bufp;

@@ -16,7 +16,7 @@ namespace ZNAC
 		public:
 			INorm(unsigned int dim):dim(dim){}
 			virtual ~INorm(){}
-			constexpr virtual operator T() = 0;
+			virtual operator T() = 0;
 		protected:
 			const unsigned int dim;
 		};
@@ -28,7 +28,7 @@ namespace ZNAC
 		public:
 			lNorm(unsigned int dim, double p):INorm<T>(dim), p(p){}
 
-			constexpr operator T()
+			operator T()
 			{
 				return pow(ABS(this->operator()(this->dim - 1)), 1/p);
 			}
@@ -44,7 +44,7 @@ namespace ZNAC
 			:public INorm<T>
 		{
 		public:
-			constexpr operator T()
+			operator T()
 			{
 				return this->operator()(this->dim - 1);
 			}

@@ -22,12 +22,15 @@ void Camera::Set()
 
 void Camera::Set(Joystick &j)
 {
-	int range;
-	const float *axes = j.Axes(range);
-	Yaw(axes[0]*0.1);
-	Pitch(axes[1]*0.1);
-	Roll(axes[5]*0.1);
-	Zoom(axes[6]*0.1);
+	if(j)
+	{
+		int range;
+		const float *axes = j.Axes(range);
+		Yaw(axes[0]*0.1);
+		Pitch(axes[1]*0.1);
+		Roll(axes[5]*0.1);
+		Zoom(axes[6]*0.1);
+	}
 	Set();
 }
 

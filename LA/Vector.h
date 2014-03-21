@@ -16,9 +16,9 @@ namespace ZNAC
 			Vector(unsigned int Dim):buf(new T[Dim]), Dim(Dim){}
 			virtual ~Vector(){delete [] buf;}
 
-			constexpr virtual T& operator[](unsigned int i){return buf[i];}
-			constexpr virtual unsigned int dim(){return Dim;}
-			constexpr virtual Vector<T> *Clone(){return new Vector<T>(Dim);}
+			virtual T& operator[](unsigned int i){return buf[i];}
+			virtual unsigned int dim(){return Dim;}
+			virtual Vector<T> *Clone(){return new Vector<T>(Dim);}
 		protected:
 			T *buf;
 			const unsigned int Dim;
