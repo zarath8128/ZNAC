@@ -9,28 +9,6 @@
 namespace ZNAC
 {
 	template<class T>
-	class IClonable
-	{
-	public:
-		virtual T *Clone() = 0;
-	};
-
-	template<class T>
-	class IWrapper
-	{
-	public:
-		IWrapper():buf(0){}
-		IWrapper(T &t):buf(&t){}
-
-		operator T&(){return *buf;}
-		void Set(T &b){buf = &b;}
-		
-	protected:
-		T *buf;
-
-	};
-
-	template<class T>
 	class ReadBuffer
 	{
 	public:
@@ -115,6 +93,14 @@ namespace ZNAC
 
 	template<class T>
 	constexpr int SIGN(const T &a){return ((a < 0)?(-1):(1));}
+
+	template<class T>
+	void SWAP(T &a, T &b)
+	{
+		T c = a;
+		a = b;
+		b = c;
+	}
 
 	template<class T>
 	const char *CLASS_NAME(const T &t){int dammy;const std::type_info & id = typeid(t);return abi::__cxa_demangle(id.name(), 0, 0, &dammy);}

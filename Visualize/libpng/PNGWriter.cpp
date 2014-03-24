@@ -75,7 +75,7 @@ void ZNAC::libpng::draw_png(int count, int width, int height, double p_dgx, doub
 		delete [] buf[h];
 }
 
-void GLCapture(void *buf, int x, int y, unsigned int width, unsigned int height)
+void GLCapture(void *buf, int x, int y, unsigned int width, unsigned int height){}
 
 void FCLOSE(FILE *fp)
 {
