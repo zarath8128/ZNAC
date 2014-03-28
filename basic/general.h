@@ -6,6 +6,8 @@
 #include <cxxabi.h>
 #include <iostream>
 
+#define DEBUG_MSG(...) printf("\n/*----debug message----*/\n\nfile:" __FILE__ "\nline:%d\ndate:" __DATE__ "\n\nmessage is below:\n", __LINE__), printf("" __VA_ARGS__), printf("\n/*---- message end ----*/\n\n")
+
 namespace ZNAC
 {
 	template<class T>
@@ -100,7 +102,7 @@ namespace ZNAC
 		
 		T &operator[](unsigned int i){return buf[i];}
 
-	private:
+	protected:
 		T buf[dim];
 	};
 

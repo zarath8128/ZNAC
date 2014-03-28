@@ -12,6 +12,29 @@ namespace ZNAC
 	namespace Graph
 	{
 		template<class T>
+		void WriteOut(const char *path, ReadBuffer)
+		{
+
+		}
+
+		template<unsigned int dim, class T = double>
+		class Vertex
+			:public Vector<dim, T>
+		{
+		public:
+			void WriteOut(std::ofstream &ofs)
+			{
+				ofs.write((char*)&Vector<dim, T>::buf, dim*sizeof(T));
+			}
+
+			void ReadIn(std::ifstream &ifs)
+			{
+				ifs.read((char*)&Vector<dim, T>::buf, dim*sizeof(T));
+			}
+		};
+
+
+/*		template<class T>
 		class Vertex
 			:public ReadBuffer<T>
 		{
@@ -147,7 +170,7 @@ namespace ZNAC
 					}
 				}
 			}
-		};
+		};*/
 	}
 }
 
