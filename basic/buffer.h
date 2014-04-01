@@ -28,6 +28,10 @@ namespace ZNAC
 		void Push(T &&t){top = new Arrow<T>(std::forward<T>(t), top);}
 		T &&Pop(){T&& t = std::forward<T>(top->data); top = top->next; return std::forward<T>(t);}
 		bool IsEmpty(){return top == nullptr;}
+
+		void operator << (T &&t){top = new Arrow<T>(std::forward<T>(t), top);}
+		void operator >> (T &t){t = std::forward<T>(top->data); Arrow<T>* tmp = top->next; top->next = nullptr; delete top; top = tmp;}
+		constexpr operator bool(){return top != nullptr;}
 	private:
 		Arrow<T> *top;
 	};
@@ -110,6 +114,8 @@ namespace ZNAC
 			--used;
 		}
 
+		void operator<<(T &&t){Add(used, std::forward<T>(t));}
+		void operator>>(T &t){t = std::forward<T>(buf[--used]);}
 	private:
 		T *buf;
 		unsigned int reserved, used;

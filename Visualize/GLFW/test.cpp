@@ -9,11 +9,11 @@ using namespace GLFW;
 
 int main()
 {
-	glfwInit();
-	demoWindow wnd;
+	//glfwInit();
+	//demoWindow wnd;
+	Window wnd;
 	while(wnd)
 	{
 		wnd.Update();
 	}
-	glfwTerminate();
 }

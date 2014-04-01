@@ -58,13 +58,6 @@ public:
 
 Stack<Point2> points;
 
-struct Edge
-{
-	unsigned int a, b;
-	Edge() = default;
-	Edge(unsigned int a, unsigned int b):a(a), b(b){}
-};
-
 struct Triangle
 {
 	unsigned int a, b, c;
@@ -123,6 +116,12 @@ double r2(Point2 a, Point2 b);
 double cr2(Point2 a, Point2 b, Point2 c);
 Point2 crc(Point2 a, Point2 b, Point2 c);
 
+template<unsigned int dim>
+void DelaunaySimplexion()
+{
+
+}
+
 int main()
 {
 	points.Push(Point2(-100, -100));
@@ -141,9 +140,6 @@ int main()
 
 	glfwInit();
 	tWindow tw;
-
-	double min = 10, temp;
-	int mini = 0, k = 0;
 
 	triangles.Push(Triangle(0, 1, 2));
 	done.Push(0);

@@ -22,6 +22,8 @@ namespace ZNAC
 			GLFWwindow *wnd;
 			bool shouldClose;
 
+		private:
+			static unsigned int wnd_nums;
 			virtual void update();
 		};
 	}
