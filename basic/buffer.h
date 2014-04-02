@@ -90,6 +90,7 @@ namespace ZNAC
 		~Array(){delete [] buf;}
 
 		T &operator[](unsigned int i){return buf[i];}
+		const T &operator[](unsigned int i) const{return buf[i];}
 		void Add(unsigned int i, T &&t)
 		{
 			if(used == reserved)
