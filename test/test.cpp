@@ -116,6 +116,12 @@ double r2(Point2 a, Point2 b);
 double cr2(Point2 a, Point2 b, Point2 c);
 Point2 crc(Point2 a, Point2 b, Point2 c);
 
+template<unsigned int dim>
+void DelaunaySimplexion()
+{
+
+}
+
 int main()
 {
 	points.Push(Point2(-100, -100));

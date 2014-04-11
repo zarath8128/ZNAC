@@ -4,36 +4,60 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "LEQSolver.h"
+#include <ctime>
 
 using namespace ZNAC::LA;
 
+
+
 int main()
 {
-	constexpr unsigned int dim = 2;
-	Vector<> v(dim), w(dim);
-	double *b = new double[dim];
-	Matrix<dim> m;
-//	DiagonalMatrix<dim, 2> m;
+	constexpr unsigned int d = 500;
+	GaussMatrix<double> G(d);
+	//Matrix<double> G(d);
+	LUMatrix<double> L(d);
+	StackVector<d, double> v, w;
 
-	for(unsigned int r = 0; r < dim; ++r)
-		for(unsigned int c = 0; c < dim; ++c)
-			m(r, c) = ((r == c)?(4.1):(((int)(r - c) >= - 2 || (int)(r - c) <= 2)?(-1):(0)));
+	for(unsigned int i = 0; i < d; ++i)
+		for(unsigned int j = 0; j < d; ++j)
+			G(i, j) = 1./(i + j + 1);
 
-	for(unsigned int i = 0; i < dim; ++i)
+	for(unsigned int i = 0; i < d; ++i)
+		w[i] = 1.;///(1 + i);
+
+	/*for(unsigned int i = 0; i < d; ++i)
 	{
-		b[i] = (rand() % 256)/255.;
-		w[i] = 0;
-//		for(unsigned int j = 0; j < dim; ++j)
-//			std::cout << m(i, j) << "\t";
-//		std::cout << std::endl;
+		for(unsigned int j = 0; j < d; ++j)
+			std::cout << "\t" << G(i, j);
+		std::cout << std::endl;
 	}
 
-	lNorm<double> l2(dim, 2);
-	std::cout << 2 << std::endl;
-	l2.Set(b);
-	std::cout << 2 << std::endl;
+	L << G;
 
-	std::cout << (double)l2 << std::endl;
+	std::cout << std::endl;
+
+	if(L)
+	for(unsigned int i = 0; i < d; ++i)
+	{
+		for(unsigned int j = 0; j < d; ++j)
+			std::cout << "\t" << L(i, j);
+		std::cout << std::endl;
+	}*/
+	
+	clock_t t0 = clock();
+	//Gauss<double>()(G, v, w);
+	LUSolver<double>()(G, v, w);
+	clock_t t1 = clock();
+	
+	for(unsigned int i = 0; i < d; ++i)
+		std::cout << v[i] << std::endl;
+
+	G(v, w);
+	
+	std::cout << "time:" << (t1 - t0)/(double)CLOCKS_PER_SEC << std::endl;
+	
+	for(unsigned int i = 0; i < d; ++i)
+		std::cout << w[i] << std::endl;
 
 	return 0;
 }
