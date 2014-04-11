@@ -27,9 +27,6 @@ namespace ZNAC
 			delete [] buffer;
 		}
 
-		void operator<<(const T &t){Check(); 
-			buffer[used++] = t;
-		}
 		void operator<<(T &&t){Check();
 		       	buffer[used++] = t;
 		}

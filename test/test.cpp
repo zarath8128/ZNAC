@@ -2,8 +2,8 @@
 #include <random>
 #include <GL/gl.h>
 #include <GL/glu.h>
-#include "../Visualize/GLFW/Window.h"
-#include "../basic/general.h"
+#include "Visualize/GLFW/Window.h"
+#include "basic/general.h"
 
 using namespace ZNAC::GLFW;
 
@@ -58,13 +58,6 @@ public:
 
 Stack<Point2> points;
 
-struct Edge
-{
-	unsigned int a, b;
-	Edge() = default;
-	Edge(unsigned int a, unsigned int b):a(a), b(b){}
-};
-
 struct Triangle
 {
 	unsigned int a, b, c;
@@ -80,7 +73,7 @@ struct Triangle
 	}
 };
 
-const unsigned int len = 10000;
+const unsigned int len = 100;
 Stack<Triangle> triangles;
 Stack<Triangle> edge;
 Stack<int> done;
@@ -141,9 +134,6 @@ int main()
 
 	glfwInit();
 	tWindow tw;
-
-	double min = 10, temp;
-	int mini = 0, k = 0;
 
 	triangles.Push(Triangle(0, 1, 2));
 	done.Push(0);
