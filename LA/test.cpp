@@ -12,11 +12,11 @@ using namespace ZNAC::LA;
 
 int main()
 {
-	constexpr unsigned int d = 500;
+	constexpr unsigned int d = 5000;
 	GaussMatrix<double> G(d);
 	//Matrix<double> G(d);
 	LUMatrix<double> L(d);
-	StackVector<d, double> v, w;
+	Vector<double> v(d), w(d);
 
 	for(unsigned int i = 0; i < d; ++i)
 		for(unsigned int j = 0; j < d; ++j)
@@ -54,10 +54,10 @@ int main()
 
 	G(v, w);
 	
-	std::cout << "time:" << (t1 - t0)/(double)CLOCKS_PER_SEC << std::endl;
 	
 	for(unsigned int i = 0; i < d; ++i)
 		std::cout << w[i] << std::endl;
+	std::cout << "time:" << (t1 - t0)/(double)CLOCKS_PER_SEC << std::endl;
 
 	return 0;
 }

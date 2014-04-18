@@ -27,9 +27,10 @@ namespace ZNAC
 			virtual ~Vector(){delete [] buf;}
 
 			Vector &operator=(const IVector<T> &v){for(unsigned int i = 0; i < *this; ++i)buf[i] = v[i];return *this;}
+			Vector &operator=(Vector<T> &&v){buf = v.buf; v.buf = nullptr; return *this;}
 			virtual const T& operator[](unsigned int i) const{return buf[i];}
 			virtual T& operator[](unsigned int i){return buf[i];}
-			virtual operator unsigned int() const {return Dim;}
+			constexpr operator unsigned int() const {return Dim;}
 		protected:
 			T *buf;
 			const unsigned int Dim;

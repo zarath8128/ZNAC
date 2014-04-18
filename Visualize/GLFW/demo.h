@@ -6,7 +6,7 @@ namespace ZNAC
 {
 	namespace Visualize
 	{
-		namespace GLFW
+		namespace Window
 		{
 			class demoWindow
 				:public Window

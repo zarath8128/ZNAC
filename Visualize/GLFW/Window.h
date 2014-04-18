@@ -1,5 +1,5 @@
-#ifndef ZARATH_ZNAC_VISUALIZE_GLFW_WINDOW_H
-#define ZARATH_ZNAC_VISUALIZE_GLFW_WINDOW_H
+#ifndef ZARATH_ZNAC_VISUALIZE_WINDOW_H
+#define ZARATH_ZNAC_VISUALIZE_WINDOW_H
 
 #include <GLFW/glfw3.h>
 
@@ -7,28 +7,40 @@ namespace ZNAC
 {
 	namespace Visualize
 	{
-		namespace GLFW
+		class Window
 		{
-			class Window
-			{
 			public:
+				const int &Width, &Height, &X, &Y, &fbWidth, &fbHeight;
+
 				Window();
-				Window(unsigned int width, unsigned int height, const char *title, bool isFullScreen = false);
+				Window(bool IsFullScreen);
+				Window(const char *title, bool IsVisible = true);
+				Window(int width, int height, bool IsVisible = true);
+				Window(int width, int height, const char *title, bool IsVisible = true);
+				Window(int width, int height, int x, int y, bool IsVisible = true);
+				Window(int width, int height, int x, int y, const char *title, bool IsVisible = true);
 				~Window();
-	
+
 				void Update();
 
 				operator bool();
 				operator GLFWwindow*();
+
 			protected:
 				GLFWwindow *wnd;
-				bool shouldClose;
-	
+
 			private:
+				int width, height, x, y, fbwidth, fbheight;
+
 				static unsigned int wnd_nums;
-				virtual void update();
-			};
-		}
+				static int context_major, context_minor;
+
+				friend void glfw_wnd_pos_func(GLFWwindow*, int, int);
+				friend void glfw_wnd_size_func(GLFWwindow*, int, int);
+				friend void glfw_wnd_fbsize_func(GLFWwindow*, int, int);
+
+				Window(int width, int height, int x, int y, const char *title,  bool isFullScreen, bool IsVisible);
+		};
 	}
 }
 

@@ -129,7 +129,7 @@ namespace ZNAC
 
 
 		template<unsigned int dim>
-		int Divide(Array<Point<dim>> &P, Array<Simplex<dim>> &S, Array<Simplex<dim>> &Add, unsigned int s, unsigned int p)
+		int Divide(Array<Point<dim>> &P, Array<Simplex<dim>> &S, Array<unsigned int> &Add, unsigned int s, unsigned int p)
 		{
 			Point<dim> points[dim];
 			unsigned int antipodes = -1;
