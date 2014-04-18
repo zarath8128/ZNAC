@@ -6,5 +6,5 @@ CLEAN=${ALL} *.o *.a
 
 include ../../makefile.t
 
-test:libWindow.a
+test:libWindow.a Capture.o
 libWindow.a:Window.o Window.h
