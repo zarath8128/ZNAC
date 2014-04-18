@@ -5,27 +5,30 @@
 
 namespace ZNAC
 {
-	namespace GLFW
+	namespace Visualize
 	{
-		class Window
+		namespace GLFW
 		{
-		public:
-			Window();
-			Window(unsigned int width, unsigned int height, const char *title, bool isFullScreen = false);
-			~Window();
+			class Window
+			{
+			public:
+				Window();
+				Window(unsigned int width, unsigned int height, const char *title, bool isFullScreen = false);
+				~Window();
+	
+				void Update();
 
-			void Update();
-
-			operator bool();
-			operator GLFWwindow*();
-		protected:
-			GLFWwindow *wnd;
-			bool shouldClose;
-
-		private:
-			static unsigned int wnd_nums;
-			virtual void update();
-		};
+				operator bool();
+				operator GLFWwindow*();
+			protected:
+				GLFWwindow *wnd;
+				bool shouldClose;
+	
+			private:
+				static unsigned int wnd_nums;
+				virtual void update();
+			};
+		}
 	}
 }
 

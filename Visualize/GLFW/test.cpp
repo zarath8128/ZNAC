@@ -4,7 +4,7 @@
 #include "demo.h"
 #include "Joystick.h"
 
-using namespace ZNAC;
+using namespace ZNAC::Visualize;
 using namespace GLFW;
 
 int main()

@@ -4,20 +4,23 @@
 
 namespace ZNAC
 {
-	namespace GLFW
+	namespace Visualize
 	{
-		class demoWindow
-			:public Window
+		namespace GLFW
 		{
-		public:
+			class demoWindow
+				:public Window
+			{
+			public:
 
 
-			demoWindow();
-		protected:
-			void update();
+				demoWindow();
+			protected:
+				void update();
 
-			Camera c;
-			Joystick j;
-		};
+				Camera c;
+				Joystick j;
+			};
+		}
 	}
 }

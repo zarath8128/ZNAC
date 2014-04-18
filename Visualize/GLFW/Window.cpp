@@ -1,7 +1,7 @@
 #include "Window.h"
 #include <iostream>
 
-using namespace ZNAC::GLFW;
+using namespace ZNAC::Visualize::GLFW;
 
 unsigned int Window::wnd_nums = 0;
 
