@@ -73,7 +73,7 @@ struct Triangle
 	}
 };
 
-const unsigned int len = 10000;
+const unsigned int len = 100;
 Stack<Triangle> triangles;
 Stack<Triangle> edge;
 Stack<int> done;

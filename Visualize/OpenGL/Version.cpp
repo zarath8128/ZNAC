@@ -1,6 +1,5 @@
-#include <GL/gl.h>
-#include <iostream>
 #include "GLUtility.h"
+#include <iostream>
 
 namespace ZNAC
 {

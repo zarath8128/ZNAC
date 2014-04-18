@@ -7,4 +7,4 @@ CLEAN=${ALL}
 
 include ../makefile.t
 
-test:Screen.o Screen.h GLFW/Window.o GLUtility.o
+test:

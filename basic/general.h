@@ -70,6 +70,22 @@ namespace ZNAC
 		}
 	};
 
+	template<class T>
+	class CSProperty
+	{
+	public:
+		CSProperty(T &t, T& (*get)(T &), T& (*set)(T &&)):buf(t), get(get), set(set){}
+
+		CSProperty &operator=(T &&t){buf = set(std::forward<T>(t));return *this;}
+		operator T&(){return get(buf);}
+		operator const T&()const{return buf;}
+	private:
+		T &buf;
+
+		T& (*get)(T &t);
+		T& (*set)(T &&t);
+	};
+
 	template<unsigned int dim, class T = double>
 	class Vector
 	{
