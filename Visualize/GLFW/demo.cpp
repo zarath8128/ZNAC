@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 
-using namespace ZNAC::GLFW;
+using namespace ZNAC::Visualize::Window;
 
 #ifndef M_PI
 #define M_PI 3.14159265358979323
