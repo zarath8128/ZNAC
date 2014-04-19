@@ -6,7 +6,7 @@
 
 namespace ZNAC
 {
-	namespace GLFW
+	namespace Visualize
 	{
 		class Vector
 		{
@@ -14,7 +14,7 @@ namespace ZNAC
 			double x, y, z, w;
 
 			Vector();
-			Vector(double x, double y, double z, double w);
+			Vector(double x, double y, double z, double w = 1);
 
 			double &operator[](int i);
 		};
@@ -40,25 +40,35 @@ namespace ZNAC
 		class Camera
 		{
 		public:
-			Camera(GLFWwindow *window);
-			Camera(int width, int height, double far, double dot_per_unit = 320);
+			Camera();
 			
 			void Set();
-			void Set(Joystick &j);
 			void Pitch(double theta);
 			void Roll(double theta);
 			void Yaw(double theta);
-			void Zoom(double exp);
-			void Distance(double exp);
-
+			void Shift(double x, double y, double z);
 
 		private:
-			Matrix state;
-			double dot_per_unit, far;
-			int width, height;
+			Vector eye;
+			Vector eye_dir;
+			Vector up;
 		};
 
+		class Projection
+		{
+		public:
+			virtual void Set() = 0;
+		};
 
+		class Ortho
+			:public Projection
+		{
+		public:
+			Ortho(double width, double height, double far = 100);
+			void Set();
+		private:
+			double w, h, far;
+		};
 	}
 }
 

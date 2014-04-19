@@ -6,5 +6,5 @@ CLEAN=${ALL} *.o *.a
 
 include ../../makefile.t
 
-test:libWindow.a Capture.o Joystick.o
-libWindow.a:Window.o Window.h
+test:libWindow.a Capture.o 
+libWindow.a:Window.o Window.h Joystick.o Joystick.h Camera.o Camera.h

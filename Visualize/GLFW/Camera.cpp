@@ -2,61 +2,49 @@
 #include <cmath>
 #include <GL/glu.h>
 
-using namespace ZNAC::GLFW;
+using namespace ZNAC::Visualize;
 
-Camera::Camera(GLFWwindow *window)
-	:dot_per_unit(320), far(1000000)
+Camera::Camera()
 {
-	glfwGetWindowSize(window, &width, &height);
+	eye[2] = 1;
+	eye_dir[2] = -1;
+	up[1] = 1;
 }
-
-Camera::Camera(int width, int height, double far, double dpu)
-	:width(width), height(height), far(far), dot_per_unit(dpu)
-{}
 
 void Camera::Set()
 {
-	glOrtho(state.a[0][3]-width/dot_per_unit, state.a[0][3]+width/dot_per_unit, state.a[1][3] - height/dot_per_unit, state.a[1][3] + height/dot_per_unit, -far, far);
-	gluLookAt(state.a[0][2], state.a[1][2], state.a[2][2], state.a[0][3], state.a[1][3], state.a[2][3], state.a[0][1], state.a[1][1], state.a[2][1]);
-}
-
-void Camera::Set(Joystick &j)
-{
-	if(j)
-	{
-		int range;
-		const float *axes = j.Axes(range);
-		Yaw(axes[0]*0.1);
-		Pitch(axes[1]*0.1);
-		Roll(axes[5]*0.1);
-		Zoom(axes[6]*0.1);
-	}
-	Set();
+	gluLookAt(eye[0], eye[1], eye[2], eye[0] + eye_dir[0], eye[1] + eye_dir[1], eye[2] + eye_dir[2], up[0], up[1], up[2]);
 }
 
 void Camera::Pitch(double theta)
 {
-	state = state*Matrix::Rotate(1, 2, theta);
+	eye_dir = Matrix::Rotate(2, 1, theta)*eye_dir;
+	up = Matrix::Rotate(2, 1, theta)*up;
 }
 
 void Camera::Roll(double theta)
 {
-	state = state*Matrix::Rotate(1, 0, theta);
+	eye_dir = Matrix::Rotate(0, 1, theta)*eye_dir;
+	up = Matrix::Rotate(0, 1, theta)*up;
 }
 
 void Camera::Yaw(double theta)
 {
-	state = state*Matrix::Rotate(2, 0, theta);
+	eye_dir = Matrix::Rotate(2, 0, theta)*eye_dir;
+	up = Matrix::Rotate(2, 0, theta)*up;
 }
 
-void Camera::Zoom(double e)
+void Camera::Shift(double x, double y, double z)
 {
-	dot_per_unit *= exp(-e);
+	eye = Matrix(Vector(x, y, z))*eye;
 }
 
-void Camera::Distance(double d)
+Ortho::Ortho(double width, double height, double far)
+	:w(width), h(height), far(far){}
+
+void Ortho::Set()
 {
-	state = state*Matrix(exp(d));
+	glOrtho(-.5*w, .5*w, -.5*h, .5*h, 0, far);
 }
 
 Vector::Vector()
@@ -97,7 +85,7 @@ Matrix::Matrix(Vector v)
 {
 	for(int i = 0; i < 4; ++i)
 		for(int j = 0; j < 4; ++j)
-			a[i][j] = ((i == 3)?(v[j]):((i == j)?(1):(0)));
+			a[i][j] = ((j == 3)?(v[i]):((i == j)?(1):(0)));
 }
 
 Matrix::Matrix(Vector *v)
