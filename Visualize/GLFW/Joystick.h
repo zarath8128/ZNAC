@@ -3,22 +3,28 @@
 
 namespace ZNAC
 {
-	namespace GLFW
+	namespace Visualize
 	{
 		class Joystick
 		{
 		public:
+			float * const &Axes = axes;
+			const int &AxesRange = arange;
+			unsigned char * const &Buttons = buttons;
+			const int &ButtonsRange = brange;
+			const char *Name;
+
 			Joystick();
 			Joystick(int joy);
 
-			const float *Axes(int &range);
-			const unsigned char *Buttons(int &range);
-			const char *Name();
-
+			void Update();
 			operator bool();
 
 		private:
 			int joy;
+			int arange, brange;
+			float *axes;
+			unsigned char *buttons;
 			bool isEnable;
 		};
 	}

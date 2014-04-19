@@ -4,7 +4,6 @@
 #include <string>
 #include <cstdio>
 #include <cstdint>
-#include <png.h>
 
 namespace ZNAC
 {
@@ -13,7 +12,7 @@ namespace ZNAC
 		class PNGWriter
 		{
 		public:
-			PNGWriter(const char *dir_path, const char *file_name, uint32_t width, uint32_t height, int color_type = PNG_COLOR_TYPE_RGB_ALPHA, unsigned int serial_number_width = 4, int bit_depth = 8);
+			PNGWriter(const char *dir_path, const char *file_name, uint32_t width, uint32_t height, int color_type = 6, unsigned int serial_number_width = 4, int bit_depth = 8);
 			~PNGWriter();
 			int operator<<(unsigned char** image);
 			operator bool() const;
@@ -29,7 +28,7 @@ namespace ZNAC
 		};
 
 		
-		int PNGWrite(FILE *dest, unsigned char **image, uint32_t width, uint32_t height, int bit_depth = 8, int color_type = PNG_COLOR_TYPE_RGB_ALPHA);
+		int PNGWrite(FILE *dest, unsigned char **image, uint32_t width, uint32_t height, int bit_depth, int color_type);
 	}
 }
 

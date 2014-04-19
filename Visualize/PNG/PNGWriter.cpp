@@ -1,4 +1,5 @@
 #include "PNGWriter.h"
+#include <png.h>
 #include <sstream>
 #include <iostream>
 #include <iomanip>
