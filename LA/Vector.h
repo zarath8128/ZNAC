@@ -47,6 +47,20 @@ namespace ZNAC
 		protected:
 			T buf[Dim];
 		};
+
+		template<class T = double>
+		class WrapVector
+			:public IVector<T>
+		{
+		public:
+			WrapVector(unsigned int Dim, T *buf):buf(buf), Dim(Dim){}
+			const T& operator[](unsigned int i) const{return buf[i];}
+			T& operator[](unsigned int i){return buf[i];}
+			operator unsigned int() const {return Dim;}
+		private:
+			T const *buf;
+			const unsigned int Dim;
+		};
 	}
 }
 

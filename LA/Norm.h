@@ -11,7 +11,6 @@ namespace ZNAC
 	{
 		template<class T>
 		class INorm
-			:public IVector<T>
 		{
 		public:
 			INorm(unsigned int dim):dim(dim){}
