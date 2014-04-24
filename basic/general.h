@@ -71,13 +71,11 @@ namespace ZNAC
 	class CSProperty
 	{
 	public:
-		CSProperty(T &t, T& (*get)(T &), T& (*set)(T &&)):buf(t), get(get), set(set){}
+		CSProperty(T& (*get)(void), T& (*set)(T &&)):get(get), set(set){}
 
-		CSProperty &operator=(T &&t){buf = set(std::forward<T>(t));return *this;}
-		operator T&(){return get(buf);}
-		operator const T&()const{return buf;}
+		CSProperty &operator=(T &&t){return set(t);}
+		operator const T&()const{return get();}
 	private:
-		T &buf;
 
 		T& (*get)(T &t);
 		T& (*set)(T &&t);

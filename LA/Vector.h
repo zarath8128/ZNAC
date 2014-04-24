@@ -26,7 +26,7 @@ namespace ZNAC
 			Vector(unsigned int Dim):buf(new T[Dim]), Dim(Dim){}
 			Vector(const IVector<T> &v):buf(new T[v]), Dim(v){for(unsigned int i = 0; i < Dim; ++i)buf[i] = v[i];}
 			template<class... TT>
-			Vector(const T &v, const TT&... arg){Initialize(0u, v, arg...);}
+			Vector(const T &v, const TT&... arg):Vector(0u, v, arg...){}
 			virtual ~Vector(){delete [] buf;}
 
 			Vector &operator=(const IVector<T> &v){for(unsigned int i = 0; i < *this; ++i)buf[i] = v[i];return *this;}
@@ -40,8 +40,8 @@ namespace ZNAC
 
 		private:
 			template<class... TT>
-			void Initialize(unsigned int Dim, const T& u, const TT&... arg){Initialize(Dim + 1, arg...);buf[Dim] = u;};
-			void Initialize(unsigned int Dim, const T& u){buf = new T[Dim + 1];this->Dim = Dim + 1;buf[Dim] = u;}
+			Vector(unsigned int N, const T &t, const TT&... arg):Vector(N + 1, arg...){buf[N] = t;}
+			Vector(unsigned int N, const T &t):Vector(N + 1){buf[N] = t;}
 		};
 
 		template<unsigned int Dim, class T = double>
