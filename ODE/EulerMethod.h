@@ -12,21 +12,14 @@ namespace ZNAC
 			:public ODESolver<T>
 		{
 		public:
-			EulerMethod(unsigned int dim):ODESolver<T>(dim), xtemp(new T[dim]){};
-			~EulerMethod(){delete xtemp;};
-			
-			void Setdt(double dt){this->dt = dt;}
+			EulerMethod(unsigned int N):ODESolver<T>(N){};
 
-			double Step(ODE<T> &f, T *x0, T *x1, double &dt)
+			void operator()(const ODE<T> &f, const LA::IVector<T> &x0, LA::IVector<T> &x1, double dt)
 			{
-				f(x0, xtemp);
-				for(unsigned int i = 0; i < this->dim; ++i)
-					x1[i] = x0[i] + dt*xtemp[i];
-				return dt;
+				f(x0, this->temp);
+				for(unsigned int i = 0; i < this->N; ++i)
+					x1[i] = x0[i] + dt*this->temp[i];
 			}
-
-		private:
-			T *xtemp;
 		};
 	}
 }

@@ -14,31 +14,24 @@ namespace ZNAC
 		class ODE
 		{
 		public:
-			virtual void operator()(T *u, T *du) = 0;
+			const unsigned int N;
+
+			ODE(unsigned int N):N(N){}
+			virtual void operator()(const LA::IVector<T> &u, LA::IVector<T> &du) const = 0;
 		};
 
 		template<class T>
 		class ODESolver
 		{
 		public:
-			ODESolver(unsigned int dim):dim(dim), temp(new T[dim]){}
-			virtual ~ODESolver(){delete [] temp;}
-			void operator()(ODE<T> &f, T *x0, T *x, double t, double dt)
-			{
-				for(unsigned int i = 0; i < dim; ++i)
-					temp[i] = x0[i];
-				while(dt < t)
-					t -= Step(f, temp, temp, dt);
+			ODESolver(unsigned int N):N(N), temp(N){}
+			virtual ~ODESolver(){}
 
-				FixedStep(f, temp, x, t);
-			}
-
-			virtual double Step(ODE<T> &f, T *x0, T *x1, double &dt) = 0;
-			virtual double FixedStep(ODE<T> &f, T *x0, T *x1, double dt){return Step(f, x0, x1, dt);}
+			virtual void operator()(const ODE<T> &f, const LA::IVector<T> &x0, LA::IVector<T> &x1, double dt) = 0;
 
 		protected:
-			const unsigned int dim;
-			T *temp;
+			const unsigned int N;
+			LA::Vector<T> temp;
 		};
 
 	}
