@@ -13,7 +13,7 @@ namespace ZNAC
 		{
 		public:
 			virtual ~IMatrix(){}
-			virtual void operator()(const IVector<T> &dom, IVector<T> &cod) = 0;
+			virtual void operator()(const IVector<T> &dom, IVector<T> &cod) const = 0;
 			virtual T &operator()(unsigned int r, unsigned int c) = 0;
 			virtual const T &operator()(unsigned int r, unsigned int c) const = 0;
 		};
@@ -26,7 +26,7 @@ namespace ZNAC
 			constexpr Matrix(unsigned int Dim):buf(new T[Dim*Dim]), Dim(Dim){}
 			~Matrix(){delete [] buf;}
 
-			virtual void operator()(const IVector<T> &dom, IVector<T> &cod)
+			virtual void operator()(const IVector<T> &dom, IVector<T> &cod)const
 			{
 				for(unsigned int i = 0; i < Dim; ++i)
 				{
@@ -109,7 +109,7 @@ namespace ZNAC
 				}
 			}
 
-			void operator()(const IVector<T> &dom, IVector<T> &cod){Matrix<T>::operator()(dom, cod);}
+			void operator()(const IVector<T> &dom, IVector<T> &cod)const{Matrix<T>::operator()(dom, cod);}
 			T &operator()(unsigned int r, unsigned int c){return (r == c ? dbuf[r] : (r > c ? rbuf[r][c]: cbuf[c][r]));}
 			virtual const T &operator()(unsigned int r, unsigned int c) const{return (r == c ? dbuf[r] : (r > c ? rbuf[r][c]: cbuf[c][r]));}
 			operator bool() const{return IsEnable;}

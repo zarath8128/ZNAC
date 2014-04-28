@@ -13,11 +13,8 @@ namespace ZNAC
 		class INorm
 		{
 		public:
-			INorm(unsigned int dim):dim(dim){}
 			virtual ~INorm(){}
-			virtual operator T() = 0;
-		protected:
-			const unsigned int dim;
+			virtual T operator()(const IVector<T>&v)const = 0;
 		};
 
 		template<class T>
@@ -25,17 +22,18 @@ namespace ZNAC
 			:public INorm<T>
 		{
 		public:
-			lNorm(unsigned int dim, double p):INorm<T>(dim), p(p){}
+			lNorm(double p):p(p){}
 
-			operator T()
+			T operator ()(const IVector<T> &v)const
 			{
-				return pow(ABS(this->operator()(this->dim - 1)), 1/p);
+				T tmp = 0;
+				for(unsigned int i = 0; i < v.N(); ++i)
+					tmp += pow(ABS(v[i]), p);
+				return pow(tmp, 1/p);
 			}
 
 		private:
 			double p;
-
-			constexpr T operator()(unsigned int dim){return ((dim)?(this->operator()(dim - 1) + pow(ABS(((T*&)(*this))[dim]), p)):(pow(ABS(((T*&)(*this))[dim]), p)));}
 		};
 
 		template<class T>
@@ -43,15 +41,12 @@ namespace ZNAC
 			:public INorm<T>
 		{
 		public:
-			operator T()
+			T operator ()(const IVector<T> &v)const
 			{
-				return this->operator()(this->dim - 1);
-			}
-
-		private:
-			constexpr T operator()(unsigned int dim)
-			{
-				return ((dim)?(MAX(ABS(this->buf[dim]), this->operator()(dim - 1))):(ABS(this->buf[dim])));
+				T tmp = 0;
+				for(unsigned int i = 0; i < v.N(); ++i)
+					tmp = tmp > ABS(v[i]) ? tmp : ABS(v[i]);
+				return tmp;
 			}
 		};
 	}

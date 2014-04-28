@@ -3,6 +3,8 @@
 
 #include "Matrix.h"
 #include "Norm.h"
+#include <iostream>
+#include <cstdint>
 
 namespace ZNAC
 {
@@ -117,16 +119,16 @@ namespace ZNAC
 				T t;
 				for(unsigned int i = 0; i < lim; ++i)
 				{
-					for(unsigned int r = 0; r < b.dim(); ++r)
+					for(unsigned int r = 0; r < b.N(); ++r)
 					{
 						tmp->operator[](r) = b[r];
-						for(unsigned int c = 0; c < b.dim(); ++c)
+						for(unsigned int c = 0; c < b.N(); ++c)
 							tmp->operator[](r) -= m(r, c)*x[c];
 						tmp->operator[](r) /= m(r, r);
 						tmp->operator[](r) += x[r];
 					}
 
-					for(unsigned int r = 0; r < b.dim(); ++r)
+					for(unsigned int r = 0; r < b.N(); ++r)
 						t = tmp->operator[](r) - x[r], x[r] = tmp->operator[](r), tmp->operator[](r) = ABS(t);
 
 					if(norm->operator()(*tmp) < eps)
@@ -155,7 +157,7 @@ namespace ZNAC
 				T t;
 				for(unsigned int i = 0; i < lim; ++i)
 				{
-					for(unsigned int r = 0; r < b.dim(); ++r)
+					for(unsigned int r = 0; r < b.N(); ++r)
 					{
 						tmp->operator[](r) = x[r];
 						x[r] = b[r];
@@ -165,7 +167,7 @@ namespace ZNAC
 						x[r] += tmp->operator[](r);
 					}
 
-					for(unsigned int r = 0; r < b.dim(); ++r)
+					for(unsigned int r = 0; r < b.N(); ++r)
 						t = tmp->operator[](r) - x[r], tmp->operator[](r) = ABS(t);
 
 					if(norm->operator()(*tmp) < eps)
@@ -181,61 +183,65 @@ namespace ZNAC
 			INorm<T> *norm;
 		};
 
+		typedef union
+		{
+			double d;
+			uint64_t n;
+		}D;
+
 		template<class T>
 		class CG
 			:public LEQSolver<T>
 		{
 		public:
-			constexpr CG(unsigned int limit, double eps, INorm<T> &norm):lim(limit), eps(eps), norm(norm.Clone()){}
-			~CG(){delete norm;}
+			constexpr CG(unsigned int limit, double eps, const INorm<T> &norm):lim(limit), eps(eps), norm(norm){}
+			~CG(){}
 			void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b)
 			{
-				Vector<T> *r = x.Clone(), *p = x.Clone(), *tmp = x.Clone();
-				T t, t1, t2, alpha, beta;
+				Vector<T> r(x.N()), p(x.N()), tmp(x.N());
+				T t1, t2, alpha, beta;
 
-				for(unsigned int i = 0; i < x.dim(); ++i)
-				{
-					r->operator[](i) = b[i];
-					for(unsigned int j = 0; j < x.dim(); ++j)
-						r->operator[](i) -= m(i, j)*x[j];
-					p->operator[](i) = r->operator[](i);
-				}
+				m(x, r);
+
+				for(unsigned int i = 0; i < x.N(); ++i)
+					p[i] = r[i] = b[i] - r[i];
 
 				for(unsigned int i = 0; i < lim; ++i)
 				{
 					t1 = t2 = 0;
-					m(*p, *tmp);
-					for(unsigned int j = 0; j < x.dim(); ++j)
+					m(p, tmp);
+					for(unsigned int j = 0; j < x.N(); ++j)
 					{
-						t1 += r->operator[](j)*r->operator[](j);
-						t2 += p->operator[](j)*tmp->operator[](j);
+						t1 += r[j]*r[j];
+						t2 += p[j]*tmp[j];
 					}
 					alpha = t1/t2;
-					for(unsigned int j = 0; j < x.dim(); ++j)
+					D d;
+					d.d = alpha;
+					for(unsigned int j = 0; j < x.N(); ++j)
 					{
-						x[j] += alpha*p->operator[](j);
-						r->operator[](j) -= alpha*tmp->operator[](j);
+						x[j] += alpha*p[j];
+						r[j] -= alpha*tmp[j];
 					}
 
-					if(norm->operator()(*tmp) < eps)
+					if(norm(tmp) < eps)
 						break;
 
 					t2 = 0;
-					for(unsigned int j = 0; j < x.dim(); ++j)
-						t2 += r->operator[](j)*r->operator[](j);
+					for(unsigned int j = 0; j < x.N(); ++j)
+						t2 += r[j]*r[j];
 					beta = t2/t1;
+					d.d = beta;
 
-					for(unsigned int j = 0; j < x.dim(); ++j)
-						p->operator[](j) = beta*p->operator[](j) + r->operator[](j);
+					for(unsigned int j = 0; j < x.N(); ++j)
+						p[j] = beta*p[j] + r[j];
 				}
-
-				delete tmp;
 			}
 
 		private:
-			unsigned int lim;
-			double eps;
-			INorm<T> *norm;
+			const unsigned int lim;
+			const double eps;
+			const INorm<T> &norm;
 		};
 	}
 }
