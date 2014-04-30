@@ -117,6 +117,11 @@ namespace ZNAC
 
 	template<class T>
 	const char *CLASS_NAME(const T &t){int dammy;const std::type_info & id = typeid(t);return abi::__cxa_demangle(id.name(), 0, 0, &dammy);}
+
+	template<class T, class... TT>
+	struct TemplateCount{constexpr operator unsigned int(){return TemplateCount<TT...>() + 1;}};
+	template<class T>
+	struct TemplateCount<T>{constexpr operator unsigned int(){return 1;}};
 }
 
 #endif

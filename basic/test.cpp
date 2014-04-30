@@ -1,15 +1,7 @@
 #include <iostream>
-
-class test
-{
-public:
-	const double &A = a;
-
-private:
-	double a;
-};
+#include "general.h"
 
 int main()
 {
-	std::cout << sizeof(test) << std::endl;
+	std::cout << ZNAC::TemplateCount<int, int, double, int, unsigned int>() << std::endl;
 }
