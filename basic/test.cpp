@@ -3,5 +3,5 @@
 
 int main()
 {
-	std::cout << ZNAC::TemplateCount<int, int, double, int, unsigned int>() << std::endl;
+	std::cout << ZNAC::TC<int, int, double, int, unsigned int>() << std::endl;
 }

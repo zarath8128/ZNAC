@@ -122,6 +122,9 @@ namespace ZNAC
 	struct TemplateCount{constexpr operator unsigned int(){return TemplateCount<TT...>() + 1;}};
 	template<class T>
 	struct TemplateCount<T>{constexpr operator unsigned int(){return 1;}};
+
+	template<class... TT>
+	constexpr unsigned int TC(){return TemplateCount<TT...>();}
 }
 
 #endif
