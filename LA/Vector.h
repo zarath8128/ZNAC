@@ -71,21 +71,19 @@ namespace ZNAC
 			const unsigned int Dim;
 		};
 
-		template<unsigned int dim, class T = double>
+		template<class T, class... TT>
 		class StaticVector
 			:public IVector<T>
 		{
 		public:
-			template<class... Args>
-			StaticVector(const Args&... args):StaticVector(0u, args...){}
+			StaticVector(const TT&... args):StaticVector(0u, args...){}
 			const T& operator[](unsigned int i) const{return buf[i];}
 			T& operator[](unsigned int i){return buf[i];}
-			constexpr unsigned int N() const{return dim;}
+			constexpr unsigned int N() const{return TemplateCount<TT...>();}
 		private:
-			T buf[dim];
+			T buf[TemplateCount<TT...>()];
 
-			template<class... Args>
-			StaticVector(unsigned int i, const T &val, const Args&... args):StaticVector(i + 1, args...){buf[i] = val;}
+			StaticVector(unsigned int i, const T &val, const TT&... args):StaticVector(i + 1, args...){buf[i] = val;}
 			StaticVector(unsigned int i, const T &val){buf[i] = val;}
 		};
 	}
