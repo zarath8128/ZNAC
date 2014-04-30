@@ -216,8 +216,6 @@ namespace ZNAC
 						t2 += p[j]*tmp[j];
 					}
 					alpha = t1/t2;
-					D d;
-					d.d = alpha;
 					for(unsigned int j = 0; j < x.N(); ++j)
 					{
 						x[j] += alpha*p[j];
@@ -231,8 +229,6 @@ namespace ZNAC
 					for(unsigned int j = 0; j < x.N(); ++j)
 						t2 += r[j]*r[j];
 					beta = t2/t1;
-					d.d = beta;
-
 					for(unsigned int j = 0; j < x.N(); ++j)
 						p[j] = beta*p[j] + r[j];
 				}
