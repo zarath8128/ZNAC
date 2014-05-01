@@ -44,17 +44,27 @@ namespace ZNAC
 		:public LA::IVector<unsigned int>
 	{
 	public:
+
 		template<class... Args>
-		FlexibleIndex(unsigned int val, const Args&... args):FlexibleIndex(args...){buf[--n] = val;}
+		FlexibleIndex(unsigned int val, const Args&... args):FlexibleIndex(args...){Max[--n] = val, buf[n] = 0;}
 		unsigned int &operator[](unsigned int i){return buf[i];}
 		const unsigned int &operator[](unsigned int i) const {return buf[i];}
+		const unsigned int * const &MAX(){return Max;}
 		constexpr unsigned int N() const {return TemplateCount<TT...>();}
+		constexpr operator unsigned int() {return LinearIndex();}
+		constexpr unsigned int operator()(TT... args){return Index(0, args...);}
 
 	private:
 		unsigned int buf[TemplateCount<TT...>()];
+		unsigned int Max[TemplateCount<TT...>()];
 		unsigned int n;
 
-		FlexibleIndex(unsigned int val):n(TemplateCount<TT...>() - 1){buf[n] = val;}
+		FlexibleIndex(unsigned int val):n(TemplateCount<TT...>() - 1){Max[n] = val, buf[n] = 0;}
+		constexpr unsigned int LinearIndex(){return LinearIndex(0);}
+		constexpr unsigned int LinearIndex(unsigned int i){return i != TemplateCount<TT...>()?LinearIndex(i + 1)*Max[i] + buf[i]:0;}
+		template<class...Args>
+		constexpr unsigned int Index(unsigned int i, unsigned int n, Args... args){return Index(i + 1, args...)*Max[i] + n;}
+		constexpr unsigned int Index(unsigned int i, unsigned int n){return 0*i + n;}
 	};
 
 	template<class... TT>
