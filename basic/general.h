@@ -5,96 +5,12 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <iostream>
+#include "../LA/Vector.h"
 
 #define DEBUG_MSG(...) printf("\n/*----debug message----*/\n\nfile:" __FILE__ "\nline:%d\ndate:" __DATE__ "\n\nmessage is below:\n", __LINE__), printf("" __VA_ARGS__), printf("\n/*---- message end ----*/\n\n")
 
 namespace ZNAC
 {
-	template<class T>
-	class ReadBuffer
-	{
-	public:
-		const unsigned int &Used;
-		ReadBuffer():ReadBuffer(16){}
-		ReadBuffer(unsigned int n):Used(used), buffer(new T[n]), used(0), reserved(n)
-		{
-		}
-		ReadBuffer(const ReadBuffer &r) = delete;
-		ReadBuffer(ReadBuffer &&r):Used(used), buffer(r.buffer), used(r.used), reserved(r.reserved)
-		{
-			r.buffer = nullptr;
-		}
-
-		~ReadBuffer(){
-			delete [] buffer;
-		}
-
-		void operator<<(T &&t){Check();
-		       	buffer[used++] = t;
-		}
-
-		ReadBuffer &operator=(const ReadBuffer &) = delete;
-		ReadBuffer &operator=(ReadBuffer &&r)
-		{
-			used = r.used;
-			r.used = 0;
-			reserved = r.reserved;
-			r.reserved = 0;
-			delete [] buffer;
-			buffer = r.buffer;
-			r.buffer = nullptr;
-		}
-
-		T &operator[](unsigned int i){return buffer[i];}
-
-		void Clear(){used = 0;}
-
-	private:
-		T *buffer;
-		unsigned int used;
-		unsigned int reserved;
-
-		void Check()
-		{
-			if(used == reserved)
-			{
-				T *temp = new T[reserved *= 2];
-				for(unsigned int i = 0; i < used; ++i)
-					temp[i] = std::move(buffer[i]);
-				delete [] buffer;
-				buffer = temp;
-			}
-		}
-	};
-
-	template<class T>
-	class CSProperty
-	{
-	public:
-		CSProperty(T& (*get)(void), T& (*set)(T &&)):get(get), set(set){}
-
-		CSProperty &operator=(T &&t){return set(t);}
-		operator const T&()const{return get();}
-	private:
-
-		T& (*get)(T &t);
-		T& (*set)(T &&t);
-	};
-
-	template<unsigned int dim, class T = double>
-	class Vector
-	{
-	public:
-		Vector() = default;
-
-		Vector &operator=(const Vector &v) = default;
-		
-		T &operator[](unsigned int i){return buf[i];}
-
-	protected:
-		T buf[dim];
-	};
-
 	template<class T>
 	constexpr const T &MAX(const T &a, const T &b){return ((a < b)?(b):(a));}
 
@@ -124,7 +40,26 @@ namespace ZNAC
 	struct TemplateCount<T>{constexpr operator unsigned int(){return 1;}};
 
 	template<class... TT>
-	constexpr unsigned int TC(){return TemplateCount<TT...>();}
+	class FlexibleIndex
+		:public LA::IVector<unsigned int>
+	{
+	public:
+		template<class... Args>
+		FlexibleIndex(unsigned int val, const Args&... args):FlexibleIndex(args...){buf[--n] = val;}
+		unsigned int &operator[](unsigned int i){return buf[i];}
+		const unsigned int &operator[](unsigned int i) const {return buf[i];}
+		constexpr unsigned int N() const {return TemplateCount<TT...>();}
+
+	private:
+		unsigned int buf[TemplateCount<TT...>()];
+		unsigned int n;
+
+		FlexibleIndex(unsigned int val):n(TemplateCount<TT...>() - 1){buf[n] = val;}
+	};
+
+	template<class... TT>
+	FlexibleIndex<TT...> Index(TT... args){return FlexibleIndex<TT...>(args...);}
+
 }
 
 #endif
