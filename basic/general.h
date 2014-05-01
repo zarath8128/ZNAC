@@ -5,7 +5,6 @@
 #include <typeinfo>
 #include <cxxabi.h>
 #include <iostream>
-#include "../LA/Vector.h"
 
 #define DEBUG_MSG(...) printf("\n/*----debug message----*/\n\nfile:" __FILE__ "\nline:%d\ndate:" __DATE__ "\n\nmessage is below:\n", __LINE__), printf("" __VA_ARGS__), printf("\n/*---- message end ----*/\n\n")
 
@@ -41,7 +40,6 @@ namespace ZNAC
 
 	template<class... TT>
 	class FlexibleIndex
-		:public LA::IVector<unsigned int>
 	{
 	public:
 
@@ -70,6 +68,19 @@ namespace ZNAC
 	template<class... TT>
 	FlexibleIndex<TT...> Index(TT... args){return FlexibleIndex<TT...>(args...);}
 
+	template<class T, class Owner>
+	class Property
+	{
+	public:
+		Property(T &(*set)(const T& t, Owner* owner), const T &(*get)(Owner *owner), Owner *owner):set(set), get(get), owner(owner){}
+		T &operator=(const T& t){return set(t, owner);}
+		operator const T & (){return get(owner);}
+
+	private:
+		T &(*set)(const T& t, Owner *owner);
+		const T &(*get)(Owner *owner);
+		Owner *owner;
+	};
 }
 
 #endif

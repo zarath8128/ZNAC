@@ -3,16 +3,24 @@
 
 using namespace ZNAC;
 
+class Test
+{
+private:
+	double dx, xoffset;
+	double x_int;
+public:
+	Property<double, Test> x;
+	unsigned int i;
+
+	Test(double dx, double xoffset):x([](const double &x, Test* t)->double&{return t->x_int = x;}, [](Test *t)->const double&{return t->x_int = t->xoffset + t->i*t->dx;}, this),dx(dx), xoffset(xoffset), i(0){}
+
+
+};
+
 int main()
 {
-	auto j = Index(3, 4, 5, 6);
-	
-	for(unsigned int z = 0; z < 5; ++z)
-		for(unsigned int y = 0; y < 4; ++y)
-			for(unsigned int x = 0; x < 3; ++x)
-			{
-				std::cout << j(x, y, z, 1) << std::endl;
-			}
-
+	Test t(0.1, 1);
+	for(t.i = 0; t.i < 20; ++t.i)
+		std::cout << t.x << std::endl;
 	return 0;
 }
