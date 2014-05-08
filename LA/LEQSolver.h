@@ -5,6 +5,7 @@
 #include "Norm.h"
 #include <iostream>
 #include <cstdint>
+#include <cassert>
 
 namespace ZNAC
 {
@@ -198,6 +199,7 @@ namespace ZNAC
 			~CG(){}
 			void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b)
 			{
+				assert(x.N() == b.N());
 				Vector<T> r(x.N()), p(x.N()), tmp(x.N());
 				T t1, t2, alpha, beta;
 
@@ -210,12 +212,15 @@ namespace ZNAC
 				{
 					t1 = t2 = 0;
 					m(p, tmp);
+
 					for(unsigned int j = 0; j < x.N(); ++j)
 					{
 						t1 += r[j]*r[j];
 						t2 += p[j]*tmp[j];
 					}
+					assert(t2 != 0);
 					alpha = t1/t2;
+					assert(!IsNaN(alpha));
 					for(unsigned int j = 0; j < x.N(); ++j)
 					{
 						x[j] += alpha*p[j];
@@ -223,7 +228,7 @@ namespace ZNAC
 					}
 
 					if(norm(tmp) < eps)
-						break;
+						return;
 
 					t2 = 0;
 					for(unsigned int j = 0; j < x.N(); ++j)
@@ -232,6 +237,7 @@ namespace ZNAC
 					for(unsigned int j = 0; j < x.N(); ++j)
 						p[j] = beta*p[j] + r[j];
 				}
+				assert(false && "CG Method is not completed!");
 			}
 
 		private:

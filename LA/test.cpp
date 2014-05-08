@@ -16,7 +16,6 @@ int main()
 	Matrix<double> G(d);
 	//LUMatrix<double> L(d);
 	Vector<double> v(d), w(d);
-	StaticVector<double> sv(.1, .2, .3);
 
 	for(unsigned int i = 0; i < d; ++i)
 		for(unsigned int j = 0; j < d; ++j)

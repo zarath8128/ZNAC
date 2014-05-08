@@ -2,6 +2,8 @@
 #define ZARATH_ZNAC_LA_VECTOR_H
 
 #include "../basic/general.h"
+#include <iostream>
+#include <cassert>
 
 namespace ZNAC
 {
@@ -17,6 +19,15 @@ namespace ZNAC
 			virtual unsigned int N() const = 0;
 		};
 
+		template<class T>
+		std::ostream &operator<<(std::ostream &dest, const IVector<T> &v)
+		{
+			dest << "N:" << v.N() << std::endl;
+			for(unsigned int i = 0; i < v.N(); ++i)
+				dest << i << ":" << v[i] << std::endl;
+			return dest;
+		}
+
 
 		template<class T = double>
 		class Vector
@@ -31,8 +42,8 @@ namespace ZNAC
 
 			Vector &operator=(const IVector<T> &v){for(unsigned int i = 0; i < *this; ++i)buf[i] = v[i];return *this;}
 			Vector &operator=(Vector<T> &&v){buf = v.buf; v.buf = nullptr; return *this;}
-			virtual const T& operator[](unsigned int i) const{return buf[i];}
-			virtual T& operator[](unsigned int i){return buf[i];}
+			virtual const T& operator[](unsigned int i) const{assert(i < Dim);return buf[i];}
+			virtual T& operator[](unsigned int i){assert(i < Dim);return buf[i];}
 			constexpr unsigned int N() const {return Dim;}
 			constexpr operator T*() const {return buf;}
 		protected:
@@ -69,22 +80,6 @@ namespace ZNAC
 		private:
 			T * const buf;
 			const unsigned int Dim;
-		};
-
-		template<class T, class... TT>
-		class StaticVector
-			:public IVector<T>
-		{
-		public:
-			StaticVector(const TT&... args):StaticVector(0u, args...){}
-			const T& operator[](unsigned int i) const{return buf[i];}
-			T& operator[](unsigned int i){return buf[i];}
-			constexpr unsigned int N() const{return TemplateCount<TT...>();}
-		private:
-			T buf[TemplateCount<TT...>()];
-
-			StaticVector(unsigned int i, const T &val, const TT&... args):StaticVector(i + 1, args...){buf[i] = val;}
-			StaticVector(unsigned int i, const T &val){buf[i] = val;}
 		};
 	}
 }
