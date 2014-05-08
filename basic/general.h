@@ -81,6 +81,12 @@ namespace ZNAC
 		const T &(*get)(Owner *owner);
 		Owner *owner;
 	};
+
+	template<class T>
+	bool IsNaN(const T& val)
+	{
+		return !(val == val);
+	}
 }
 
 #endif
