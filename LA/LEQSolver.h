@@ -11,19 +11,12 @@ namespace ZNAC
 {
 	namespace LA
 	{
-		template<class T>
-		class LEQSolver
-		{
-		public:
-			virtual void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b) = 0;
-		};
-
-		template<class T>
+/*		template<class T>
 		class LUSolver
-			:public LEQSolver<T>
 		{
 		public:
-			void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b)
+			template<class MATRIX, class U>
+			void operator()(const MATRIX &m, IVector<T> &x, const IVector<T> &b, const U &u)
 			{
 				const unsigned int dim = b;
 				LUMatrix<double> L(dim);
@@ -45,13 +38,13 @@ namespace ZNAC
 				}
 			}
 		};
-
-		template<class T>
+*/
+/*		template<class T>
 		class Gauss
-			:public LEQSolver<T>
 		{
 		public:
-			void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b)
+			template<class MATRIX, class U>
+			void operator()(const MATRIX &m, IVector<T> &x, const IVector<T> &b, const U &u)
 			{
 				GaussMatrix<T> G(b);
 				Vector<T> V(b);
@@ -106,15 +99,15 @@ namespace ZNAC
 				}
 			}
 		};
-
-		template<class T>
+*/
+/*		template<class T>
 		class Jacobi
-			:public LEQSolver<T>
 		{
 		public:
 			constexpr Jacobi(unsigned int limit, double eps, INorm<T> &norm):lim(limit), eps(eps), norm(norm.Clone()){}
 			~Jacobi(){delete norm;}
-			void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b)
+			template<class MATRIX, class U>
+			void operator()(const MATRIX &m, IVector<T> &x, const IVector<T> &b, const U& u)
 			{
 				Vector<T> *tmp = b.Clone();
 				T t;
@@ -144,15 +137,16 @@ namespace ZNAC
 			double eps;
 			INorm<T> *norm;
 		};
-
-		template<class T>
+*/
+/*		template<class T>
 		class GaussSeidel
-			:public LEQSolver<T>
 		{
 		public:
 			constexpr GaussSeidel(unsigned int limit, double eps, INorm<T> &norm):lim(limit), eps(eps), norm(norm.Clone()){}
 			~GaussSeidel(){delete norm;}
-			void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b)
+
+			template<class MATRIX, class U>
+			void operator()(const MATRIX &m, IVector<T> &x, const IVector<T> &b, const U& u)
 			{
 				Vector<T> *tmp = b.Clone();
 				T t;
@@ -183,67 +177,119 @@ namespace ZNAC
 			double eps;
 			INorm<T> *norm;
 		};
-
-		typedef union
-		{
-			double d;
-			uint64_t n;
-		}D;
-
+*/
 		template<class T>
 		class CG
-			:public LEQSolver<T>
 		{
 		public:
-			constexpr CG(unsigned int limit, double eps, const INorm<T> &norm):lim(limit), eps(eps), norm(norm){}
+			unsigned int n = 0;
+			unsigned int rep = 0;
+			double err = 0;
+
+			constexpr CG(unsigned int limit, unsigned int restart, double eps)
+				:lim(limit), restart(restart), eps(eps), IsComplete(false){}
 			~CG(){}
-			void operator()(const IMatrix<T> &m, IVector<T> &x, const IVector<T> &b)
+
+			template<class MATRIX, class VALID_INDEX>
+			void operator()(const MATRIX &m, IVector<T> &x, const IVector<T> &b, const VALID_INDEX &valid)
 			{
 				assert(x.N() == b.N());
-				Vector<T> r(x.N()), p(x.N()), tmp(x.N());
-				T t1, t2, alpha, beta;
-
-				m(x, r);
-
+				Vector<T> r(x.N()), p(x.N()), tmp(x.N()), b_local(x.N());
 				for(unsigned int i = 0; i < x.N(); ++i)
-					p[i] = r[i] = b[i] - r[i];
+					r[i] = p[i] = tmp[i] = b_local[i] = 0;
+				T t1, t2, alpha, beta = 0, b_euclid = 0;
+				rep = 0;
+				n = 0;
 
-				for(unsigned int i = 0; i < lim; ++i)
+				for(auto &i : valid)
+					b_euclid += b[i]*b[i], b_local[i] = b[i];
+
+				for(unsigned int k = 0; k < lim; ++k)
 				{
+					m(x, r);
+
 					t1 = t2 = 0;
-					m(p, tmp);
+					for(auto &i : valid)
+						r[i] = b_local[i] - r[i], t2 += r[i]*r[i];
 
-					for(unsigned int j = 0; j < x.N(); ++j)
+					for(unsigned int i = 0; i < restart; ++i)
 					{
-						t1 += r[j]*r[j];
-						t2 += p[j]*tmp[j];
-					}
-					assert(t2 != 0);
-					alpha = t1/t2;
-					assert(!IsNaN(alpha));
-					for(unsigned int j = 0; j < x.N(); ++j)
-					{
-						x[j] += alpha*p[j];
-						r[j] -= alpha*tmp[j];
-					}
+						if(t2 < eps*b_euclid || (t2 < eps && b_euclid < eps))
+							goto CG_SUCCESS;
 
-					if(norm(tmp) < eps)
-						return;
+						for(auto &j : valid)
+							p[j] = beta*p[j] + r[j];
 
-					t2 = 0;
-					for(unsigned int j = 0; j < x.N(); ++j)
-						t2 += r[j]*r[j];
-					beta = t2/t1;
-					for(unsigned int j = 0; j < x.N(); ++j)
-						p[j] = beta*p[j] + r[j];
+						m(p, tmp);
+
+						t1 = 0;
+						for(auto &j : valid)
+							t1 += p[j]*tmp[j];
+
+						if(t1 == 0 && t2 == 0)
+							goto CG_SUCCESS;
+
+						if(t1 == 0)
+							goto CG_FAILED;
+
+						alpha = t2/t1;
+
+						if(IsNaN(alpha))
+							goto CG_FAILED;
+
+						t2 = 0;
+
+						for(auto &j : valid)
+						{
+							x[j] += alpha*p[j];
+							r[j] -= alpha*tmp[j];
+							t2 += r[j]*r[j];
+						}
+
+						++n;
+						beta = (t1 == 0 ? 1 : t2/(alpha*t1));
+
+#ifdef CG_VERBOSE
+						std::cerr << "error = " << (b_euclid ? t2/b_euclid : t2) << std::endl;
+	 					std::cerr << "alpha   = " << alpha <<  std::endl;
+	 					std::cerr << "beta    = " << beta <<  std::endl;
+	 					std::cerr << "t1      = " << t1 <<  std::endl;
+	 					std::cerr << "t2      = " << t2 <<  std::endl;
+	 					std::cerr << "b_euclid= " << b_euclid <<  std::endl;
+#endif
+					}
+					rep++;
+#ifdef CG_VERBOSE
+	 				std::cerr << "restarted:" << k + 1 << std::endl;
+#endif
 				}
-				assert(false && "CG Method is not completed!");
+CG_FAILED:
+				IsComplete = false;
+#ifdef CG_VERBOSE
+ 				std::cerr << "CG Method failed" <<  std::endl;
+				std::cerr << "alpha = " << alpha <<  std::endl;
+	 			std::cerr << "beta  = " << beta <<  std::endl;
+	 			std::cerr << "t1    = " << t1 <<  std::endl;
+	 			std::cerr << "t2    = " << t2 <<  std::endl;
+	 			std::cerr << "b_euclid= " << b_euclid <<  std::endl;
+#endif
+				return;
+
+CG_SUCCESS:
+				IsComplete = true;
+#ifdef CG_VERBOSE
+	 			std::cerr << "CG Method Completed!" << std::endl;
+#endif
+				return;
 			}
 
-		private:
-			const unsigned int lim;
+			operator bool() const {return IsComplete;}
+
+			const unsigned int lim, restart;
 			const double eps;
-			const INorm<T> &norm;
+
+		private:
+			bool IsComplete;
 		};
 	}
 }

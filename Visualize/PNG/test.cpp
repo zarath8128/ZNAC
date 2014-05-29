@@ -6,7 +6,7 @@
 using namespace ZNAC::Visualize;
 int main()
 {
-	PNGWriter pw("./sample", "ttt", 100, 100);
+//	PNGWriter pw("./sample", "ttt", 100, 100);
 
 	unsigned char *image[100], base_image[100][100][4];
 
@@ -22,8 +22,10 @@ int main()
 		}
 	}
 
-	for(int i = 0; i < 2; ++i)
-		pw << image;
+//	for(int i = 0; i < 2; ++i)
+//		pw << image;
+
+
 
 
 	return 0;

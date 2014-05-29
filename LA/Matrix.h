@@ -8,25 +8,30 @@ namespace ZNAC
 {
 	namespace LA
 	{
-		template<class T>
-		class IMatrix
-		{
-		public:
-			virtual ~IMatrix(){}
-			virtual void operator()(const IVector<T> &dom, IVector<T> &cod) const = 0;
-			virtual T &operator()(unsigned int r, unsigned int c) = 0;
-			virtual const T &operator()(unsigned int r, unsigned int c) const = 0;
-		};
+		/*----------------------------------------*/
+		//template<class T>
+		//class MATRIX
+		//{
+		//public:
+		//	template<class ValidRange>
+		//	void operator()(const IVector<T> &dom, IVector<T> &cod, ValidRange&& r) const;
+		//	T &operator()(unsigned int r, unsigned int c);
+		//	const T &operator()(unsigned int r, unsigned int c) const;
+		//};
+		//
+		//T ValidRange.begin();
+		//T has implicid cast to unsigned int.
+		/*----------------------------------------*/
 
 		template<class T = double>
 		class Matrix
-			:public IMatrix<T>
 		{
 		public:
 			constexpr Matrix(unsigned int Dim):buf(new T[Dim*Dim]), Dim(Dim){}
 			~Matrix(){delete [] buf;}
 
-			virtual void operator()(const IVector<T> &dom, IVector<T> &cod)const
+			template<class U>
+			void operator()(const IVector<T> &dom, IVector<T> &cod, const U &u)const
 			{
 				for(unsigned int i = 0; i < Dim; ++i)
 				{
@@ -56,7 +61,8 @@ namespace ZNAC
 				dbuf = Matrix<T>::buf + Dim*(Dim - 1);
 			}
 
-			void operator<<(const IMatrix<T> &m)
+			template<class MATRIX>
+			void operator<<(const MATRIX &m)
 			{
 				dbuf[0] = m(0, 0);
 				for(unsigned int i = 1; i < Matrix<T>::Dim; ++i)
@@ -87,7 +93,8 @@ namespace ZNAC
 				IsEnable = true;
 			}
 
-			void operator>>(IMatrix<T> &m)
+			template<class MATRIX>
+			void operator>>(MATRIX &m)
 			{
 				m(0, 0) = dbuf[0];
 				for(unsigned int i = 1; i < Matrix<T>::Dim; ++i)
@@ -137,7 +144,8 @@ namespace ZNAC
 
 			void Swap(unsigned int i, unsigned int j){T *b = rbuf[i]; rbuf[i] = rbuf[j]; rbuf[j] = b;}
 
-			void operator=(const IMatrix<T> &m)
+			template<class MATRIX>
+			void operator=(const MATRIX &m)
 			{
 				for(unsigned int i = 0; i < Matrix<T>::Dim; ++i)
 					for(unsigned int j = 0; j < Matrix<T>::Dim; ++j)
@@ -151,7 +159,6 @@ namespace ZNAC
 
 		template<unsigned int Dim, unsigned int diag, class T = double>
 		class DiagonalMatrix
-			:public IMatrix<T>
 		{
 		public:
 			DiagonalMatrix():buf(new T[Dim*(2*diag + 1) - diag*(diag + 1) + 1]), bufp(new T*[2*diag + 1] + diag)
