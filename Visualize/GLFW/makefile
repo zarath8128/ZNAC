@@ -1,6 +1,6 @@
 include ../../makefile.v
 
-LDLIBS += -lGL -lGLU -lglfw3 -lX11 -lXrandr -lXi -lXxf86vm -lrt -lpthread -lstdc++ ../PNG/PNGWriter.o -lpng ../OpenGL/Version.o ../OpenGL/Error.o -lftgl
+LDLIBS += -lGL -lGLU -lglfw -lX11 -lXrandr -lXi -lXxf86vm -lrt -lpthread -lstdc++ ../PNG/PNGWriter.o -lpng ../OpenGL/Version.o ../OpenGL/Error.o -lftgl
 ALL += test libWindow.a
 CLEAN=${ALL} *.o *.a
 

@@ -15,7 +15,7 @@ int main()
 {
 	Window wnd;
 	Camera camera;
-	FTGLPixmapFont font("/usr/share/fonts/dejavu/DejaVuSans.ttf");
+	FTGLPixmapFont font("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf");
 	if(font.Error())
 		std::cout << "font error" << std::endl;
 	if(!font.FaceSize(10))
