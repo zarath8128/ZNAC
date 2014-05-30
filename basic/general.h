@@ -6,8 +6,11 @@
 #include <cxxabi.h>
 #include <iostream>
 
+#ifndef NDEBUG
 #define DEBUG_MSG(...) printf("\n/*----debug message----*/\n\nfile:" __FILE__ "\nline:%d\ndate:" __DATE__ "\n\nmessage is below:\n", __LINE__), printf("" __VA_ARGS__), printf("\n/*---- message end ----*/\n\n")
-
+#else
+#define DEBUG_MSG(...)
+#endif
 namespace ZNAC
 {
 	template<class T>
@@ -38,7 +41,7 @@ namespace ZNAC
 	template<class T>
 	struct TemplateCount<T>{constexpr operator unsigned int(){return 1;}};
 
-	template<class... TT>
+	/*template<class... TT>
 	class FlexibleIndex
 	{
 	public:
@@ -63,10 +66,10 @@ namespace ZNAC
 		template<class...Args>
 		constexpr unsigned int Index(unsigned int i, unsigned int n, Args... args){return Index(i + 1, args...)*Max[i] + n;}
 		constexpr unsigned int Index(unsigned int i, unsigned int n){return 0*i + n;}
-	};
+	};*/
 
-	template<class... TT>
-	FlexibleIndex<TT...> Index(TT... args){return FlexibleIndex<TT...>(args...);}
+//	template<class... TT>
+//	FlexibleIndex<TT...> Index(TT... args){return FlexibleIndex<TT...>(args...);}
 
 	template<class T, class Owner>
 	class Property

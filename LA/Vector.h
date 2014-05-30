@@ -44,8 +44,8 @@ namespace ZNAC
 			Vector &operator=(Vector<T> &&v){buf = v.buf; v.buf = nullptr; return *this;}
 			virtual const T& operator[](unsigned int i) const{assert(i < Dim);return buf[i];}
 			virtual T& operator[](unsigned int i){assert(i < Dim);return buf[i];}
-			constexpr unsigned int N() const {return Dim;}
-			constexpr operator T*() const {return buf;}
+			unsigned int N() const {return Dim;}
+			operator T*() const {return buf;}
 		protected:
 			T *buf;
 			unsigned int Dim;

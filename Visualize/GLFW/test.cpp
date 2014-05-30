@@ -1,3 +1,4 @@
+#include "../PNG/GLCapture.h"
 #include <GLFW/glfw3.h>
 #include <FTGL/ftgl.h>
 #include <GL/glext.h>
@@ -6,7 +7,6 @@
 #include "Capture.h"
 #include "Camera.h"
 #include "Joystick.h"
-#include "../PNG/PNGWriter.h"
 
 using namespace ZNAC;
 using namespace Visualize;
@@ -49,13 +49,17 @@ int main()
 
 	glfwSwapBuffers(wnd);
 
-	Capture c(wnd);
+//	Capture c(wnd);
 
-	c.Get();
+//	c.Get();
 
-	PNGWriter w("./", "test", c.Width, c.Height);
+//	PNGWriter w("./", "test", c.Width, c.Height);
 
 //	w << c.Image;
+//
+	glEnd();
+	glBegin(-2);
+	GLCapture("testpng.png", 0, 0, 640, 480);
 
 	while(wnd)
 	{
